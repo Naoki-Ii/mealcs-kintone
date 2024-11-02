@@ -28,6 +28,7 @@ import { split, xor } from 'lodash';
             "value": "d"
         }
     }
+
     kintone.events.on("app.record.detail.show", async function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
 
