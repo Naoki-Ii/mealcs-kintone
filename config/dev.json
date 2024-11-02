@@ -1,0 +1,21 @@
+{
+    "KINTONE_DOMAIN": "mealcs",
+    "APP": {
+        "ORDER": {
+            "AppName": "発注管理",
+            "AppID": 6
+        },
+        "SETTING": {
+            "AppName": "管理画面設定",
+            "AppID": 5
+        },
+        "NUMBER_MANAGEMENT": {
+            "AppName": "数量管理",
+            "AppID": 7
+        },
+        "KUBUN_MANAGEMENT": {
+            "AppName": "区分期限設定",
+            "AppID": 8
+        }
+    }
+}

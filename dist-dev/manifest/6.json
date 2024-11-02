@@ -1,0 +1,16 @@
+{
+  "app": 6,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist-dev/発注管理/index.js"
+    ],
+    "css": [
+      "dist-dev/発注管理/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}

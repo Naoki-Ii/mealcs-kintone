@@ -1,0 +1,16 @@
+{
+  "app": 8,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist-dev/区分期限設定/index.js"
+    ],
+    "css": [
+      "dist-dev/区分期限設定/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}

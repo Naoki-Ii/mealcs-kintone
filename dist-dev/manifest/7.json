@@ -1,0 +1,16 @@
+{
+  "app": 7,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist-dev/数量管理/index.js"
+    ],
+    "css": [
+      "dist-dev/数量管理/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}

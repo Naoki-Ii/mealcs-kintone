@@ -1,0 +1,49 @@
+/*!***************************************************************************!*\
+  !*** css ./node_modules/css-loader/dist/cjs.js!./src/apps/発注管理/style.css ***!
+  \***************************************************************************/
+table.edit_table {
+    width: auto;
+    table-layout: fixed;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.edit_table th,
+.edit_table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: center;
+}
+
+.edit_table .count_scope,
+.edit_table .total_scope {
+    padding: 0px;
+}
+
+.edit_table input {
+    width: 60px;
+    border: none;
+    text-align: right;
+    padding: 0px;
+}
+
+.edit_table thead th,
+.edit_table .date,
+.edit_table .label {
+    background-color: #c5dbff;
+}
+
+.edit_table .total_scope,
+.edit_table .total_scope input {
+    background-color: #eee;
+}
+
+.edit_table .note_scope {
+    padding: 1px;
+}
+
+.edit_table .note_scope textarea {
+    height: 100%;
+    border: none;
+    padding: 3px;
+}
