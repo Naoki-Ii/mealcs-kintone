@@ -3,19 +3,19 @@
     "APP": {
         "ORDER": {
             "AppName": "発注管理",
-            "AppID": 0
+            "AppID": 12
         },
         "SETTING": {
             "AppName": "管理画面設定",
-            "AppID": 0
+            "AppID": 11
         },
         "NUMBER_MANAGEMENT": {
             "AppName": "数量管理",
-            "AppID": 0
+            "AppID": 10
         },
         "KUBUN_MANAGEMENT": {
             "AppName": "区分期限設定",
-            "AppID": 0
+            "AppID": 9
         }
     }
 }

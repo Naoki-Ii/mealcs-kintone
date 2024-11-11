@@ -6,7 +6,7 @@ import { split, xor } from 'lodash';
     const currentEnvGlobalConfig = getEnvGlobalConfig();
     const EventTrigger = [
         "app.record.edit.show",
-        "app.record.create.show",
+        "app.record.create.change.start_date",
     ];
 
     const SaveTrigger = [
@@ -51,8 +51,7 @@ import { split, xor } from 'lodash';
         element += '<thead>';
         element += '<tr>';
         element += `<th class="date">日付</th>`;
-        element += `<th class="kubun">区分</th>`;
-        element += `<th class="kubun">合計</th>`;
+        element += `<th class="kubun">区分</th>`
 
         for (const category of categories) {
             // xxx(xx)の場合 (の前に<br>を入れる
@@ -75,17 +74,7 @@ import { split, xor } from 'lodash';
             element += `</tr>`;
             for (const kubun of Object.keys(time_kubun)) {
                 element += '<tr>';
-                let total = 0;
-                for (const category of categories) {
-                    // (, )は_に変換
-                    let key = category.replace("(", "_");
-                    key = key.replace(")", "_");
-                    if (category != "ムース" && category != "腎臓食" && category != "糖尿食" && category != "減塩食") {
-                        total += Number(row.value[time_kubun[kubun].value + "_" + key].value);
-                    }
-                }
                 element += `<td class="label">${time_kubun[kubun].label}</td>`;
-                element += `<td class="total_scope"><input type="number" value="${total}"></td>`;
                 for (const category of categories) {
                     // (, )は_に変換
                     let key = category.replace("(", "_");
@@ -107,102 +96,100 @@ import { split, xor } from 'lodash';
         return event;
     });
 
-    kintone.events.on(EventTrigger, async function (event) {
+    kintone.events.on(EventTrigger, function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
-        const laylout = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.SETTING.AppID }, "GET", "field");
-        let categories = Object.keys(laylout.properties.kubun.options);
-        categories.sort((a, b) => {
-            // 数字部分を取り出し、整数として比較する
-            const numA = parseInt(a.split('.')[0], 10);
-            const numB = parseInt(b.split('.')[0], 10);
-            return numA - numB;
-        });
-        for (var i = 0; i < categories.length; i++) {
-            const v = categories[i].split('.')[1];
-            categories[i] = v;
-        }
-        // space取得 
-        const box = document.createElement('div');
-        box.id = 'order-detail';
-        let element = '<table class="edit_table">';
-        element += '<thead>';
-        element += '<tr>';
-        element += `<th class="date">日付</th>`;
-        element += `<th class="kubun">区分</th>`;
-        element += `<th class="kubun">合計</th>`;
-
-
-        for (const category of categories) {
-            // xxx(xx)の場合 (の前に<br>を入れる
-            if (category.indexOf("(") != -1) {
-                const index = category.indexOf("(");
-                const category1 = category.slice(0, index);
-                const category2 = category.slice(index);
-                element += `<th class="kubun" style="width:45px;">${category1}<br>${category2}</th>`;
-            } else {
-                element += `<th class="kubun" style="width:45px;">${category}</th>`;
+        kintone.api(kintone.api.url('/k/v1/app/form/fields.json', true), "GET", { "app": currentEnvGlobalConfig.APP.SETTING.AppID }).then(function (laylout) {
+            let categories = Object.keys(laylout.properties.kubun.options);
+            categories.sort((a, b) => {
+                // 数字部分を取り出し、整数として比較する
+                const numA = parseInt(a.split('.')[0], 10);
+                const numB = parseInt(b.split('.')[0], 10);
+                return numA - numB;
+            });
+            for (var i = 0; i < categories.length; i++) {
+                const v = categories[i].split('.')[1];
+                categories[i] = v;
             }
-        }
-        element += `<th class="kubun">備考</th>`;
-        element += '</tr>';
-        element += '</thead>';
-        element += '<tbody>';
-        for (const row of event.record.発注明細.value) {
+            if (event.record.発注明細.value.length != 7) {
+                event.record.発注明細.value = [];
+                //  7日分のデータを作成
+                let base_date = new Date(event.record.start_date.value);
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(base_date).setDate(base_date.getDate() + i);
+                    let row = {
+                        "日付": {
+                            "value": new Date(d).toISOString().slice(0, 10)
+                        }
+                    };
+                    for (const kubun of Object.keys(time_kubun)) {
+                        for (const category of categories) {
+                            let key = category.replace("(", "_");
+                            key = key.replace(")", "_");
+                            row[time_kubun[kubun].value + "_" + key] = {
+                                "value": 0
+                            }
+                        }
+                        row[time_kubun[kubun].value + "_備考"] = {
+                            "value": ""
+                        }
+                    }
+                    event.record.発注明細.value.push({
+                        "value": row
+                    });
+                }
+            }
+            console.log(event.record.発注明細.value);
+            // space取得 
+            const box = document.createElement('div');
+            box.id = 'order-detail';
+            let element = '<table class="edit_table">';
+            element += '<thead>';
             element += '<tr>';
-            element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
-            element += `</tr>`;
-            for (const kubun of Object.keys(time_kubun)) {
-                element += '<tr>';
-                let total = 0;
-                for (const category of categories) {
-                    // (, )は_に変換
-                    let key = category.replace("(", "_");
-                    key = key.replace(")", "_");
-                    if (category != "ムース" && category != "腎臓食" && category != "糖尿食" && category != "減塩食") {
-                        total += Number(row.value[time_kubun[kubun].value + "_" + key].value);
-                    }
-                }
-                element += `<td class="label">${time_kubun[kubun].label}</td>`;
-                element += `<td class="total_scope"><input type="number" value="${total}"></td>`;
-                for (const category of categories) {
-                    // (, )は_に変換
-                    let key = category.replace("(", "_");
-                    key = key.replace(")", "_");
-                    if (category != "ムース" && category != "腎臓食" && category != "糖尿食" && category != "減塩食") {
-                        element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + key}"></td>`;
-                    } else {
-                        element += `<td class="out_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + key}"></td>`;
-                    }
+            element += `<th class="date">日付</th>`;
+            element += `<th class="kubun">区分</th>`;
 
+
+            for (const category of categories) {
+                // xxx(xx)の場合 (の前に<br>を入れる
+                if (category.indexOf("(") != -1) {
+                    const index = category.indexOf("(");
+                    const category1 = category.slice(0, index);
+                    const category2 = category.slice(index);
+                    element += `<th class="kubun" style="width:45px;">${category1}<br>${category2}</th>`;
+                } else {
+                    element += `<th class="kubun" style="width:45px;">${category}</th>`;
                 }
-                // 備考欄 textarea
-                element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${row.value[time_kubun[kubun].value + "_備考"].value}</textarea></td>`;
-                element += '</tr>';
             }
-        }
-        element += '</tbody>';
-        element += '</table>';
-        box.innerHTML = element;
-
-        kintone.app.record.getSpaceElement('order-detail').appendChild(box);
-
-        $(".count_scope input[type=number]").change(function () {
-            const currentValue = parseInt($(this).val(), 10) || 0;
-            let total = currentValue;
-            // 変更した要素の親要素を取得
-            const parent = $(this).parent();
-            parent.siblings(".count_scope").each(function () {
-                $(this).find("input[type=number]").each(function () {
-                    const value = parseInt($(this).val(), 10) || 0;
-                    total += value;
-                });
-            });
-            parent.siblings(".total_scope").each(function () {
-                $(this).find("input[type=number]").val(total);
-            });
+            element += `<th class="kubun">備考</th>`;
+            element += '</tr>';
+            element += '</thead>';
+            element += '<tbody>';
+            for (const row of event.record.発注明細.value) {
+                element += '<tr>';
+                element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
+                element += `</tr>`;
+                for (const kubun of Object.keys(time_kubun)) {
+                    element += '<tr>';
+                    element += `<td class="label">${time_kubun[kubun].label}</td>`;
+                    for (const category of categories) {
+                        // (, )は_に変換
+                        let key = category.replace("(", "_");
+                        key = key.replace(")", "_");
+                        element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + key}"></td>`;
+                    }
+                    // 備考欄 textarea
+                    element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${row.value[time_kubun[kubun].value + "_備考"].value}</textarea></td>`;
+                    element += '</tr>';
+                }
+            }
+            element += '</tbody>';
+            element += '</table>';
+            box.innerHTML = element;
+            $("#order-detail").remove();
+            kintone.app.record.getSpaceElement('order-detail').appendChild(box);
+            return event;
         });
 
-        return event;
     });
 
     kintone.events.on(SaveTrigger, async function (event) {
@@ -265,7 +252,7 @@ import { split, xor } from 'lodash';
         }
         const body = {
             "app": kintone.app.getId(),
-            "id": kintone.app.record.getId(),
+            "id": event.record.$id.value,
             "record": {
                 "発注明細": {
                     "value": data
@@ -280,7 +267,7 @@ import { split, xor } from 'lodash';
                     "value": event.record.company_id.value
                 },
                 "order_id": {
-                    "value": kintone.app.record.getId()
+                    "value": event.record.$id.value
                 },
                 "data": {
                     "value": JSON.stringify(NumberManagemenetJson, null, 4)
