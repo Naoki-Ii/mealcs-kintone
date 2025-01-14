@@ -31,19 +31,23 @@ import { split, xor } from 'lodash';
 
     kintone.events.on("app.record.detail.show", async function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
-
-        const laylout = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.SETTING.AppID }, "GET", "field");
-        let categories = Object.keys(laylout.properties.kubun.options);
-        categories.sort((a, b) => {
-            // 数字部分を取り出し、整数として比較する
-            const numA = parseInt(a.split('.')[0], 10);
-            const numB = parseInt(b.split('.')[0], 10);
-            return numA - numB;
-        });
-        for (var i = 0; i < categories.length; i++) {
-            const v = categories[i].split('.')[1];
-            categories[i] = v;
+        const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
+        let categories = [];
+        for (const category of category_response.records) {
+            const key = category.key.value;
+            const label = category.label.value;
+            categories.push({
+                "key": key,
+                "label": label,
+                "priority": category.priority.value
+            });
         }
+        // priorityでソート
+        categories.sort((a, b) => {
+            return a.priority - b.priority;
+        });
+
+
         // space取得 
         const box = document.createElement('div');
         box.id = 'order-detail';
@@ -54,15 +58,7 @@ import { split, xor } from 'lodash';
         element += `<th class="kubun">区分</th>`
 
         for (const category of categories) {
-            // xxx(xx)の場合 (の前に<br>を入れる
-            if (category.indexOf("(") != -1) {
-                const index = category.indexOf("(");
-                const category1 = category.slice(0, index);
-                const category2 = category.slice(index);
-                element += `<th class="kubun" style="width:45px;">${category1}<br>${category2}</th>`;
-            } else {
-                element += `<th class="kubun" style="width:45px;">${category}</th>`;
-            }
+            element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
         }
         element += `<th class="kubun">備考</th>`;
         element += '</tr>';
@@ -76,10 +72,7 @@ import { split, xor } from 'lodash';
                 element += '<tr>';
                 element += `<td class="label">${time_kubun[kubun].label}</td>`;
                 for (const category of categories) {
-                    // (, )は_に変換
-                    let key = category.replace("(", "_");
-                    key = key.replace(")", "_");
-                    element += `<td>${row.value[time_kubun[kubun].value + "_" + key].value}</td>`;
+                    element += `<td>${row.value[time_kubun[kubun].value + "_" + category.key].value}</td>`;
                 }
                 let v = row.value[time_kubun[kubun].value + "_備考"].value;
                 // \nを<br>に変換
@@ -98,18 +91,21 @@ import { split, xor } from 'lodash';
 
     kintone.events.on(EventTrigger, function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
-        kintone.api(kintone.api.url('/k/v1/app/form/fields.json', true), "GET", { "app": currentEnvGlobalConfig.APP.SETTING.AppID }).then(function (laylout) {
-            let categories = Object.keys(laylout.properties.kubun.options);
-            categories.sort((a, b) => {
-                // 数字部分を取り出し、整数として比較する
-                const numA = parseInt(a.split('.')[0], 10);
-                const numB = parseInt(b.split('.')[0], 10);
-                return numA - numB;
-            });
-            for (var i = 0; i < categories.length; i++) {
-                const v = categories[i].split('.')[1];
-                categories[i] = v;
+        kintone.api(kintone.api.url('/k/v1/records.json', true), "GET", { "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }).then(function (category_response) {
+            console.log(category_response);
+            let categories = [];
+            for (const category of category_response.records) {
+                categories.push({
+                    "key": category.key.value,
+                    "label": category.label.value,
+                    "priority": category.priority.value
+                });
             }
+            // priorityでソート
+            categories.sort((a, b) => {
+                return a.priority - b.priority;
+            });
+
             if (event.record.発注明細.value.length != 7) {
                 event.record.発注明細.value = [];
                 //  7日分のデータを作成
@@ -123,9 +119,7 @@ import { split, xor } from 'lodash';
                     };
                     for (const kubun of Object.keys(time_kubun)) {
                         for (const category of categories) {
-                            let key = category.replace("(", "_");
-                            key = key.replace(")", "_");
-                            row[time_kubun[kubun].value + "_" + key] = {
+                            row[time_kubun[kubun].value + "_" + category.key] = {
                                 "value": 0
                             }
                         }
@@ -150,15 +144,7 @@ import { split, xor } from 'lodash';
 
 
             for (const category of categories) {
-                // xxx(xx)の場合 (の前に<br>を入れる
-                if (category.indexOf("(") != -1) {
-                    const index = category.indexOf("(");
-                    const category1 = category.slice(0, index);
-                    const category2 = category.slice(index);
-                    element += `<th class="kubun" style="width:45px;">${category1}<br>${category2}</th>`;
-                } else {
-                    element += `<th class="kubun" style="width:45px;">${category}</th>`;
-                }
+                element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
             }
             element += `<th class="kubun">備考</th>`;
             element += '</tr>';
@@ -172,10 +158,7 @@ import { split, xor } from 'lodash';
                     element += '<tr>';
                     element += `<td class="label">${time_kubun[kubun].label}</td>`;
                     for (const category of categories) {
-                        // (, )は_に変換
-                        let key = category.replace("(", "_");
-                        key = key.replace(")", "_");
-                        element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + key}"></td>`;
+                        element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + category.key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
                     }
                     // 備考欄 textarea
                     element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${row.value[time_kubun[kubun].value + "_備考"].value}</textarea></td>`;

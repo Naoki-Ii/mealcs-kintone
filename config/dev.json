@@ -16,6 +16,10 @@
         "KUBUN_MANAGEMENT": {
             "AppName": "区分期限設定",
             "AppID": 8
+        },
+        "KUBUN_MASTER_DB": {
+            "AppName": "項目管理",
+            "AppID": 13
         }
     }
 }
