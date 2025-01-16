@@ -1,6 +1,5 @@
 import { getEnvGlobalConfig } from '../../../typescript/libs/envConfig';
 import { KintoneRestAPI } from '../../../common/function';
-import { split, xor } from 'lodash';
 (function () {
     "use strict";
     const currentEnvGlobalConfig = getEnvGlobalConfig();
@@ -47,7 +46,6 @@ import { split, xor } from 'lodash';
             return a.priority - b.priority;
         });
 
-
         // space取得 
         const box = document.createElement('div');
         box.id = 'order-detail';
@@ -56,7 +54,7 @@ import { split, xor } from 'lodash';
         element += '<tr>';
         element += `<th class="date">日付</th>`;
         element += `<th class="kubun">区分</th>`
-
+        element += `<th class="kubun">合計注文数</th>`
         for (const category of categories) {
             element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
         }
@@ -71,8 +69,14 @@ import { split, xor } from 'lodash';
             for (const kubun of Object.keys(time_kubun)) {
                 element += '<tr>';
                 element += `<td class="label">${time_kubun[kubun].label}</td>`;
+                const total = Number(row.value[time_kubun[kubun].value + "_注文数"].value) + Number(row.value[time_kubun[kubun].value + "_検食"].value);
+                element += `<td>${total}</td>`;
                 for (const category of categories) {
-                    element += `<td>${row.value[time_kubun[kubun].value + "_" + category.key].value}</td>`;
+                    let val = row.value[time_kubun[kubun].value + "_" + category.key].value;
+                    if (val == 0) {
+                        val = "";
+                    }
+                    element += `<td>${val}</td>`;
                 }
                 let v = row.value[time_kubun[kubun].value + "_備考"].value;
                 // \nを<br>に変換

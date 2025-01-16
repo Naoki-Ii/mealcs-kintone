@@ -19,3 +19,37 @@ export function KintoneRestAPI(body, method, unit) {
     }
     return api;
 }
+
+export function formatDate(date) {
+    var format_str = "";
+    var y = date.getFullYear();
+    var M = ('0' + (date.getMonth() + 1)).slice(-2);
+    var d = ('0' + date.getDate()).slice(-2);
+    var h = ('0' + date.getHours()).slice(-2);
+    var m = ('0' + date.getMinutes()).slice(-2);
+    format_str = y + "-" + M + "-" + d + " " + h + ":" + m;
+    return format_str;
+};
+
+export function formatDate2(date, format) {
+    if (date == "Invalid Date") {
+        return "";
+    }
+    const y = date.getFullYear();
+    const m = ("00" + (date.getMonth() + 1)).slice(-2);
+    const d = ("00" + date.getDate()).slice(-2);
+    format = format.replace(/yyyy/g, y);
+    format = format.replace(/MM/g, m);
+    format = format.replace(/dd/g, d);
+    return format;
+}
+
+export function getCSV(data, name) {
+    var bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+    var blob = new Blob([bom, data], { "type": "text/csv" });
+    var url = (window.URL || window.webkitURL).createObjectURL(blob);
+    var link = document.createElement('a');
+    link.href = url;
+    link.download = name;
+    link.click();
+}

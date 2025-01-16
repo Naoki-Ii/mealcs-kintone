@@ -44,3 +44,5 @@ table.edit_table {
     border: none;
     padding: 3px;
 }
+
+@import url("css/custome_table.css");

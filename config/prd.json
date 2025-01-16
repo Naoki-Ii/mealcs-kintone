@@ -3,7 +3,10 @@
     "APP": {
         "ORDER": {
             "AppName": "発注管理",
-            "AppID": 12
+            "AppID": 12,
+            "CUSTOMIZE": {
+                "MainView": "5520193"
+            }
         },
         "SETTING": {
             "AppName": "管理画面設定",
