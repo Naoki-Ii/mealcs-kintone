@@ -110,7 +110,16 @@ import { KintoneRestAPI } from '../../../common/function';
                 return a.priority - b.priority;
             });
 
-            if (event.record.発注明細.value.length != 7) {
+            if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value == event.record.start_date.value) {
+                // 7日分のデータと開始日が一致する場合は何もしない
+            } else if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value != event.record.start_date.value) {
+                // 7日分のデータがあり、開始日が一致しない場合は日付を更新
+                let base_date = new Date(event.record.start_date.value);
+                for (let i = 0; i < 7; i++) {
+                    const d = new Date(base_date).setDate(base_date.getDate() + i);
+                    event.record.発注明細.value[i].value.日付.value = new Date(d).toISOString().slice(0, 10);
+                }
+            } else {
                 event.record.発注明細.value = [];
                 //  7日分のデータを作成
                 let base_date = new Date(event.record.start_date.value);
@@ -165,7 +174,8 @@ import { KintoneRestAPI } from '../../../common/function';
                         element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + category.key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
                     }
                     // 備考欄 textarea
-                    element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${row.value[time_kubun[kubun].value + "_備考"].value}</textarea></td>`;
+                    let v = row.value[time_kubun[kubun].value + "_備考"].value == undefined ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
+                    element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${v}</textarea></td>`;
                     element += '</tr>';
                 }
             }
@@ -279,6 +289,30 @@ import { KintoneRestAPI } from '../../../common/function';
 
         const response = await KintoneRestAPI(BulkRequestBody, "POST", "bulk");
         console.log(response);
+        return event;
+    });
+
+    kintone.events.on("app.record.create.submit", function (event) {
+        const start_date = event.record.start_date.value;
+        const company_id = event.record.company_id.value;
+        // start_date が月曜日でない場合
+        const date = new Date(start_date);
+        const day = date.getDay();
+        console.log(date, day);
+        if (day != 1) {
+            event.error = "開始日は月曜日にしてください";
+        }
+        return kintone.api(kintone.api.url('/k/v1/records.json', true), "GET", { "app": currentEnvGlobalConfig.APP.ORDER.AppID, "query": `start_date = "${start_date}" and company_id = "${company_id}"` }).then(function (response) {
+            if (response.records.length > 0) {
+                event.error = "指定した日付の注文は登録されています";
+            }
+            return event;
+        });
+    });
+
+    kintone.events.on("app.record.edit.show", function (event) {
+        event.record.start_date.disabled = true;
+        event.record.company_name.disabled = true;
         return event;
     });
 

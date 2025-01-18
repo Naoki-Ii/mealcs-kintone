@@ -43,7 +43,7 @@ import { KintoneRestAPI, formatDate, formatDate2, getCSV } from '../../../common
         //フィールド情報取得
         const fieldlist = await KintoneRestAPI(GetFieldElement, "GET", "field");
         const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
-        const list = await KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" limit 500` }, "GET", "mul");
+        const list = await KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" order by 表示優先順位 asc limit 500` }, "GET", "mul");
         const records = list.records;
         const time_kubun = {
             "b": {
@@ -118,6 +118,11 @@ import { KintoneRestAPI, formatDate, formatDate2, getCSV } from '../../../common
                     let element = "";
                     // record.発注明細.value のdateとbase_dateが一致するものだけを表示
                     const row = record.発注明細.value.find((row) => row.value.日付.value == base_date);
+                    if (row == undefined) {
+                        console.log(record.$id.value);
+                        console.log("row is undefined");
+                        return "";
+                    }
                     element += `<tr class="${RowClass}">`;
                     element += `<td style="text-align:center;" rowspan="4"><a href="https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/show#record=${record.$id.value}" target="_blank"><img src="https://static.cybozu.com/contents/k/image/argo/component/recordlist/record-detail.png"></a></td>`;
                     element += `<td rowspan="4" class="date" style="width:140px;">${record.company_name.value}</td>`;
