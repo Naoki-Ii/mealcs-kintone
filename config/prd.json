@@ -23,6 +23,10 @@
         "KUBUN_MASTER_DB": {
             "AppName": "項目管理",
             "AppID": 14
+        },
+        "HISTORY_MANAGEMENT": {
+            "AppName": "履歴管理",
+            "AppID": 16
         }
     }
 }

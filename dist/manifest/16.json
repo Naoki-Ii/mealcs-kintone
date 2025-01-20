@@ -1,0 +1,16 @@
+{
+  "app": 16,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist/履歴管理/index.js"
+    ],
+    "css": [
+      "dist/履歴管理/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}
