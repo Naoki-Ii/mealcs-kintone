@@ -3,10 +3,10 @@
   "scope": "ALL",
   "desktop": {
     "js": [
-      "dist/管理画面設定/index.js"
+      "dist/施設情報管理/index.js"
     ],
     "css": [
-      "dist/管理画面設定/style.min.css"
+      "dist/施設情報管理/style.min.css"
     ]
   },
   "mobile": {

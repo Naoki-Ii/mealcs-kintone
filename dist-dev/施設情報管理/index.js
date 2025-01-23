@@ -10,13 +10,13 @@
 /******/ 	"use strict";
 /******/ 	var __webpack_modules__ = ({
 
-/***/ "./src/apps/管理画面設定/index.js":
+/***/ "./src/apps/施設情報管理/index.js":
 /*!**********************************!*\
-  !*** ./src/apps/管理画面設定/index.js ***!
+  !*** ./src/apps/施設情報管理/index.js ***!
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _common_system_display_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../common/system_display.js */ \"./src/common/system_display.js\");\n\n\n//# sourceURL=webpack://kintone/./src/apps/%E7%AE%A1%E7%90%86%E7%94%BB%E9%9D%A2%E8%A8%AD%E5%AE%9A/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _common_system_display_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../common/system_display.js */ \"./src/common/system_display.js\");\n\n\n//# sourceURL=webpack://kintone/./src/apps/%E6%96%BD%E8%A8%AD%E6%83%85%E5%A0%B1%E7%AE%A1%E7%90%86/index.js?");
 
 /***/ }),
 
@@ -1454,7 +1454,7 @@ eval("\nvar globalThis = __webpack_require__(/*! ../internals/global-this */ \".
 /******/ 	// startup
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module can't be inlined because the eval devtool is used.
-/******/ 	var __webpack_exports__ = __webpack_require__("./src/apps/管理画面設定/index.js");
+/******/ 	var __webpack_exports__ = __webpack_require__("./src/apps/施設情報管理/index.js");
 /******/ 	
 /******/ })()
 ;
