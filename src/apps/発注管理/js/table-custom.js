@@ -1,11 +1,13 @@
 import { getEnvGlobalConfig } from '../../../typescript/libs/envConfig';
-import { KintoneRestAPI } from '../../../common/function';
+import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/function';
 (function () {
     "use strict";
     const currentEnvGlobalConfig = getEnvGlobalConfig();
     const EventTrigger = [
         "app.record.edit.show",
+        "app.record.create.show",
         "app.record.create.change.start_date",
+        "app.record.create.change.company_id",
     ];
 
     const SaveTrigger = [
@@ -23,7 +25,7 @@ import { KintoneRestAPI } from '../../../common/function';
             "value": "l"
         },
         "d": {
-            "label": "夜",
+            "label": "夕",
             "value": "d"
         }
     }
@@ -31,7 +33,71 @@ import { KintoneRestAPI } from '../../../common/function';
     kintone.events.on("app.record.detail.show", async function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
         const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
+        const history_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `order_id = ${event.record.$id.value} and company_id = ${event.record.company_id.value} order by レコード番号 asc limit 500` }, "GET", "mul");
         let categories = [];
+        const info_icon = "https://order-mealcs.com/img/info_icon.png";
+        const history_data_json = [];
+        for (var n = 0; n < history_response.records.length; n++) {
+            try {
+                const record = history_response.records[n];
+                const data = JSON.parse(record.data.value);
+                const change_date = formatDateTime(new Date(record.作成日時.value), "MM/dd HH:mm");
+                history_data_json[n] = {
+                    "date": change_date,
+                    "data": {}
+                }
+                for (const row of data) {
+                    const key_date = row.value.日付.value;
+                    delete row.value.日付;
+                    history_data_json[n]["data"][key_date] = row.value;
+                }
+            } catch (error) {
+                console.log(error);
+                continue;
+            }
+        }
+
+        console.log("history_data_json", history_data_json);
+
+        let hisotry_diff_info = {
+            "0": history_data_json[0]
+        };
+        let last_history = history_data_json[0];
+        for (var p = 1; p < history_data_json.length; p++) {
+            const history_list = history_data_json[p];
+            // console.log("last_history", last_history);
+            Object.keys(history_list.data).forEach(date_key => {
+                Object.keys(history_list.data[date_key]).forEach(field_key => {
+                    if (last_history.data[date_key] == undefined) {
+                        return;
+                    }
+                    if (last_history.data[date_key][field_key] == undefined) {
+                        return;
+                    }
+                    if (history_list.data[date_key][field_key]["value"] != last_history.data[date_key][field_key]["value"]) {
+                        if (hisotry_diff_info[p] == undefined) {
+                            hisotry_diff_info[p] = {
+                                "date": history_list.date,
+                                "data": {}
+                            };
+                        }
+                        // 差分がある場合
+                        if (hisotry_diff_info[p]["data"][date_key] == undefined) {
+                            hisotry_diff_info[p]["data"][date_key] = {}
+                        }
+                        if (hisotry_diff_info[p]["data"][date_key][field_key] == undefined) {
+                            hisotry_diff_info[p]["data"][date_key][field_key] = {}
+                        }
+                        Object.assign(hisotry_diff_info[p]["data"][date_key][field_key], history_list.data[date_key][field_key]);
+                    }
+                });
+            });
+            last_history = history_list;
+        }
+
+        console.log("hisotry_diff_info", hisotry_diff_info);
+
+
         for (const category of category_response.records) {
             const key = category.key.value;
             const label = category.label.value;
@@ -73,10 +139,29 @@ import { KintoneRestAPI } from '../../../common/function';
                 element += `<td>${total}</td>`;
                 for (const category of categories) {
                     let val = row.value[time_kubun[kubun].value + "_" + category.key].value;
+
+                    // 履歴表示機能
+                    let history_info_element = "<div class='history_info_box'>";
+                    let display_count = 0;
+                    for (const key in hisotry_diff_info) {
+                        if (hisotry_diff_info[key]["data"][row.value.日付.value] != undefined) {
+                            if (hisotry_diff_info[key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key] != undefined) {
+                                const history_date = hisotry_diff_info[key]["date"];
+                                const history_data = hisotry_diff_info[key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key]["value"];
+                                history_info_element += `<div class="balloon" data-date="${history_date}" data-field="${time_kubun[kubun].value + "_" + category.key}">${history_date} : <span class="strong">${history_data}</span></div>`;
+                                display_count++;
+                            }
+                        }
+                    }
+                    history_info_element += "</div>";
                     if (val == 0) {
                         val = "";
                     }
-                    element += `<td>${val}</td>`;
+                    if (display_count > 1) {
+                        element += `<td>${val}<img src="${info_icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
+                    } else {
+                        element += `<td>${val}</td>`;
+                    }
                 }
                 let v = row.value[time_kubun[kubun].value + "_備考"].value;
                 // \nを<br>に変換
@@ -90,103 +175,122 @@ import { KintoneRestAPI } from '../../../common/function';
         box.innerHTML = element;
 
         kintone.app.record.getSpaceElement('order-detail').appendChild(box);
+
+        $('.info_icon').hover(
+            function () {
+                $(this).siblings('.history_info_box').css('display', 'block');
+            },
+            function () {
+                $(this).siblings('.history_info_box').css('display', 'none');
+            }
+        );
         return event;
     });
 
     kintone.events.on(EventTrigger, function (event) {
         kintone.app.record.setFieldShown('発注明細', false);
-        kintone.api(kintone.api.url('/k/v1/records.json', true), "GET", { "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }).then(function (category_response) {
-            console.log(category_response);
-            let categories = [];
-            for (const category of category_response.records) {
-                categories.push({
-                    "key": category.key.value,
-                    "label": category.label.value,
-                    "priority": category.priority.value
-                });
-            }
-            // priorityでソート
-            categories.sort((a, b) => {
-                return a.priority - b.priority;
-            });
-
-            if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value == event.record.start_date.value) {
-                // 7日分のデータと開始日が一致する場合は何もしない
-            } else if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value != event.record.start_date.value) {
-                // 7日分のデータがあり、開始日が一致しない場合は日付を更新
-                let base_date = new Date(event.record.start_date.value);
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(base_date).setDate(base_date.getDate() + i);
-                    event.record.発注明細.value[i].value.日付.value = new Date(d).toISOString().slice(0, 10);
-                }
-            } else {
-                event.record.発注明細.value = [];
-                //  7日分のデータを作成
-                let base_date = new Date(event.record.start_date.value);
-                for (let i = 0; i < 7; i++) {
-                    const d = new Date(base_date).setDate(base_date.getDate() + i);
-                    let row = {
-                        "日付": {
-                            "value": new Date(d).toISOString().slice(0, 10)
-                        }
-                    };
-                    for (const kubun of Object.keys(time_kubun)) {
-                        for (const category of categories) {
-                            row[time_kubun[kubun].value + "_" + category.key] = {
-                                "value": 0
-                            }
-                        }
-                        row[time_kubun[kubun].value + "_備考"] = {
-                            "value": ""
-                        }
-                    }
-                    event.record.発注明細.value.push({
-                        "value": row
+        const company_name = event.record.company_name.value;
+        const start_date = event.record.start_date.value;
+        const company_id = event.record.company_id.value;
+        if (company_name == "" || company_name == undefined || start_date == "" || start_date == undefined) {
+            return event;
+        }
+        kintone.api(kintone.api.url('/k/v1/record.json', true), "GET", { "app": currentEnvGlobalConfig.APP.SETTING.AppID, "id": company_id }).then(function (company_response) {
+            kintone.api(kintone.api.url('/k/v1/records.json', true), "GET", { "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }).then(function (category_response) {
+                let categories = [];
+                for (const category of category_response.records) {
+                    categories.push({
+                        "key": category.key.value,
+                        "label": category.label.value,
+                        "priority": category.priority.value
                     });
                 }
-            }
-            console.log(event.record.発注明細.value);
-            // space取得 
-            const box = document.createElement('div');
-            box.id = 'order-detail';
-            let element = '<table class="edit_table">';
-            element += '<thead>';
-            element += '<tr>';
-            element += `<th class="date">日付</th>`;
-            element += `<th class="kubun">区分</th>`;
+                // priorityでソート
+                categories.sort((a, b) => {
+                    return a.priority - b.priority;
+                });
 
-
-            for (const category of categories) {
-                element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
-            }
-            element += `<th class="kubun">備考</th>`;
-            element += '</tr>';
-            element += '</thead>';
-            element += '<tbody>';
-            for (const row of event.record.発注明細.value) {
-                element += '<tr>';
-                element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
-                element += `</tr>`;
-                for (const kubun of Object.keys(time_kubun)) {
-                    element += '<tr>';
-                    element += `<td class="label">${time_kubun[kubun].label}</td>`;
-                    for (const category of categories) {
-                        element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + category.key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
+                if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value == event.record.start_date.value) {
+                    // 7日分のデータと開始日が一致する場合は何もしない
+                } else if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value != event.record.start_date.value) {
+                    // 7日分のデータがあり、開始日が一致しない場合は日付を更新
+                    let base_date = new Date(event.record.start_date.value);
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(base_date).setDate(base_date.getDate() + i);
+                        event.record.発注明細.value[i].value.日付.value = new Date(d).toISOString().slice(0, 10);
                     }
-                    // 備考欄 textarea
-                    let v = row.value[time_kubun[kubun].value + "_備考"].value == undefined ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
-                    element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${v}</textarea></td>`;
-                    element += '</tr>';
+                } else {
+                    event.record.発注明細.value = [];
+                    //  7日分のデータを作成
+                    let base_date = new Date(event.record.start_date.value);
+                    for (let i = 0; i < 7; i++) {
+                        const d = new Date(base_date).setDate(base_date.getDate() + i);
+                        let row = {
+                            "日付": {
+                                "value": new Date(d).toISOString().slice(0, 10)
+                            }
+                        };
+                        for (const kubun of Object.keys(time_kubun)) {
+                            for (const category of categories) {
+                                let number = 0;
+                                if (category.key == "検食" && company_response.record.検食数.value > 0) {
+                                    number = company_response.record.検食数.value;
+                                }
+                                row[time_kubun[kubun].value + "_" + category.key] = {
+                                    "value": number
+                                }
+                            }
+                            row[time_kubun[kubun].value + "_備考"] = {
+                                "value": ""
+                            }
+                        }
+                        event.record.発注明細.value.push({
+                            "value": row
+                        });
+                    }
                 }
-            }
-            element += '</tbody>';
-            element += '</table>';
-            box.innerHTML = element;
-            $("#order-detail").remove();
-            kintone.app.record.getSpaceElement('order-detail').appendChild(box);
-            return event;
-        });
+                console.log(event.record.発注明細.value);
+                // space取得 
+                const box = document.createElement('div');
+                box.id = 'order-detail';
+                let element = '<table class="edit_table">';
+                element += '<thead>';
+                element += '<tr>';
+                element += `<th class="date">日付</th>`;
+                element += `<th class="kubun">区分</th>`;
 
+
+                for (const category of categories) {
+                    element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
+                }
+                element += `<th class="kubun">備考</th>`;
+                element += '</tr>';
+                element += '</thead>';
+                element += '<tbody>';
+                for (const row of event.record.発注明細.value) {
+                    element += '<tr>';
+                    element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
+                    element += `</tr>`;
+                    for (const kubun of Object.keys(time_kubun)) {
+                        element += '<tr>';
+                        element += `<td class="label">${time_kubun[kubun].label}</td>`;
+                        for (const category of categories) {
+                            element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + category.key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
+                        }
+                        // 備考欄 textarea
+                        let v = row.value[time_kubun[kubun].value + "_備考"].value == undefined ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
+                        element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${v}</textarea></td>`;
+                        element += '</tr>';
+                    }
+                }
+                element += '</tbody>';
+                element += '</table>';
+                box.innerHTML = element;
+                $("#order-detail").remove();
+                kintone.app.record.getSpaceElement('order-detail').appendChild(box);
+                return event;
+            });
+        });
     });
 
     kintone.events.on(SaveTrigger, async function (event) {
@@ -272,6 +376,21 @@ import { KintoneRestAPI } from '../../../common/function';
             }
         }
 
+        const hostory_body = {
+            "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID,
+            "record": {
+                "company_id": {
+                    "value": event.record.company_id.value
+                },
+                "order_id": {
+                    "value": event.record.$id.value
+                },
+                "data": {
+                    "value": JSON.stringify(data, null, 4)
+                }
+            }
+        }
+
         const BulkRequestBody = {
             "requests": [
                 {
@@ -283,6 +402,11 @@ import { KintoneRestAPI } from '../../../common/function';
                     "method": "PUT",
                     "api": "/k/v1/record.json",
                     "payload": body
+                },
+                {
+                    "method": "POST",
+                    "api": "/k/v1/record.json",
+                    "payload": hostory_body
                 }
             ]
         }

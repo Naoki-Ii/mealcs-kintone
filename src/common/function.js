@@ -53,3 +53,22 @@ export function getCSV(data, name) {
     link.download = name;
     link.click();
 }
+
+export function formatDateTime(date, format) {
+    if (!(date instanceof Date) || isNaN(date)) {
+        return date;
+    }
+    const y = date.getFullYear();
+    const m = ("00" + (date.getMonth() + 1)).slice(-2);
+    const d = ("00" + date.getDate()).slice(-2);
+    const h = ("00" + date.getHours()).slice(-2);
+    const i = ("00" + date.getMinutes()).slice(-2);
+    const s = ("00" + date.getSeconds()).slice(-2);
+    format = format.replace(/yyyy/g, y);
+    format = format.replace(/MM/g, m);
+    format = format.replace(/dd/g, d);
+    format = format.replace(/HH/g, h);
+    format = format.replace(/mm/g, i);
+    format = format.replace(/ss/g, s);
+    return format;
+}

@@ -12,6 +12,10 @@ table.edit_table {
     text-align: center;
 }
 
+.edit_table td {
+    position: relative;
+}
+
 .edit_table .count_scope,
 .edit_table .total_scope {
     padding: 0px;
@@ -43,6 +47,49 @@ table.edit_table {
     height: 100%;
     border: none;
     padding: 3px;
+}
+
+.history_info_box {
+    display: none;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #3a3a3a;
+    color: #fff;
+    font-size: 12px;
+    position: absolute;
+    text-align: left;
+    width: 120px;
+    top: -19px;
+    left: 60px;
+    z-index: 3;
+}
+
+.history_info_box .strong {
+    font-weight: bold;
+    font-size: 13px;
+}
+
+.history_info_box .balloon {
+    padding: 2px;
+}
+
+table .info_icon {
+    position: absolute;
+    top: 2px;
+    right: 2px;
+}
+
+table .info_icon:hover {
+    cursor: pointer;
+}
+
+#index_customise table tbody td {
+    position: relative;
+    text-align: center;
+}
+
+#index_customise table tbody td .history_info_box {
+    z-index: 10;
 }
 
 @import url("css/custome_table.css");
