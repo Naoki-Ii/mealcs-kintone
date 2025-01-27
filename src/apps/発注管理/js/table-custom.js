@@ -97,7 +97,6 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
 
         console.log("hisotry_diff_info", hisotry_diff_info);
 
-
         for (const category of category_response.records) {
             const key = category.key.value;
             const label = category.label.value;
@@ -176,6 +175,11 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
 
         kintone.app.record.getSpaceElement('order-detail').appendChild(box);
 
+        $('.history_info_box').each(function () {
+            const balloons = $(this).children().get().reverse();
+            $(this).append(balloons);
+        });
+
         $('.info_icon').hover(
             function () {
                 $(this).siblings('.history_info_box').css('display', 'block');
@@ -249,7 +253,7 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                         });
                     }
                 }
-                console.log(event.record.発注明細.value);
+                // console.log(event.record.発注明細.value);
                 // space取得 
                 const box = document.createElement('div');
                 box.id = 'order-detail';

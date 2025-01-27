@@ -147,10 +147,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 last_history = history_list;
             }
         });
-
         console.log("hisotry_diff_info", hisotry_diff_info);
-
-
 
         const time_kubun = {
             "b": {
@@ -340,6 +337,11 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
 
         element.innerHTML += sec;
         $(".kintone-app-headermenu-space").append(header);
+
+        $('.history_info_box').each(function () {
+            const balloons = $(this).children().get().reverse();
+            $(this).append(balloons);
+        });
 
         $(".kintone-app-headermenu-space #filter_date").val(formatDate2(new Date(base_date), "yyyy-MM-dd"));
 
