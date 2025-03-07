@@ -7,7 +7,7 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
         "app.record.edit.show",
         "app.record.create.show",
         "app.record.create.change.start_date",
-        "app.record.create.change.company_id",
+        "app.record.create.change.company_name",
     ];
 
     const SaveTrigger = [
@@ -192,11 +192,12 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
     });
 
     kintone.events.on(EventTrigger, function (event) {
+        console.log(event);
         kintone.app.record.setFieldShown('発注明細', false);
         const company_name = event.record.company_name.value;
         const start_date = event.record.start_date.value;
         const company_id = event.record.company_id.value;
-        if (company_name == "" || company_name == undefined || start_date == "" || start_date == undefined) {
+        if (company_name == "" || company_name == undefined || start_date == "" || start_date == undefined || company_id == "" || company_id == undefined) {
             return event;
         }
         kintone.api(kintone.api.url('/k/v1/record.json', true), "GET", { "app": currentEnvGlobalConfig.APP.SETTING.AppID, "id": company_id }).then(function (company_response) {
