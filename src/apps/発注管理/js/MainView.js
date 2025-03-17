@@ -184,9 +184,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 'key': '注文詳細',
                 'custome_view': true,
                 'custome_label': (function () {
-                    csv_data += "会社名,日付,";
+                    csv_data += "施設名,日付,";
                     let element = `<th style="min-width:10px;"></th>`;
-                    element += `<th class="date">会社名</th>`;
+                    element += `<th>施設名</th>`;
                     element += `<th class="date">日付</th>`;
                     element += `<th class="kubun" style="width:45px;">区分</th>`;
                     element += `<th class="kubun" style="width:45px;">合計</th>`;
@@ -230,10 +230,10 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                     }
                     element += `<tr class="${RowClass}">`;
                     element += `<td style="text-align:center;" rowspan="4"><a href="https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/show#record=${record.$id.value}" target="_blank"><img src="https://static.cybozu.com/contents/k/image/argo/component/recordlist/record-detail.png"></a></td>`;
-                    element += `<td rowspan="4" class="date" style="width:140px;">${record.company_name.value}</td>`;
+                    element += `<td rowspan="4" style="width:140px;">${record.ログイン名.value}</td>`;
                     element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
                     element += `</tr>`;
-                    csv_data += `${record.company_name.value},${row.value.日付.value},`;
+                    csv_data += `${record.ログイン名.value},${row.value.日付.value},`;
                     for (const kubun of Object.keys(time_kubun)) {
                         element += `<tr class="${RowClass}">`;
                         element += `<td class="label" style="text-align:center;">${time_kubun[kubun].label}</td>`;
