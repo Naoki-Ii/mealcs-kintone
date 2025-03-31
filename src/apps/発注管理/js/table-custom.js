@@ -31,7 +31,6 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
     }
 
     kintone.events.on("app.record.detail.show", async function (event) {
-        kintone.app.record.setFieldShown('発注明細', false);
         const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
         const history_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `order_id = ${event.record.$id.value} and company_id = ${event.record.company_id.value} order by レコード番号 asc limit 500` }, "GET", "mul");
         let categories = [];
@@ -127,7 +126,8 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
         element += '</tr>';
         element += '</thead>';
         element += '<tbody>';
-        for (const row of event.record.発注明細.value) {
+        let data = JSON.parse(event.record.body.value);
+        for (const row of data) {
             element += '<tr>';
             element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
             element += `</tr>`;
@@ -137,6 +137,12 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                 const total = Number(row.value[time_kubun[kubun].value + "_注文数"].value) + Number(row.value[time_kubun[kubun].value + "_検食"].value);
                 element += `<td>${total}</td>`;
                 for (const category of categories) {
+                    if (row.value[time_kubun[kubun].value + "_" + category.key] == undefined) {
+                        // 初期値0として登録
+                        row.value[time_kubun[kubun].value + "_" + category.key] = {
+                            "value": 0
+                        }
+                    }
                     let val = row.value[time_kubun[kubun].value + "_" + category.key].value;
 
                     // 履歴表示機能
@@ -162,7 +168,7 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                         element += `<td>${val}</td>`;
                     }
                 }
-                let v = row.value[time_kubun[kubun].value + "_備考"].value;
+                let v = row.value[time_kubun[kubun].value + "_備考"].value == null ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
                 // \nを<br>に変換
                 v = v.replace(/\n/g, "<br>");
                 element += `<td class="note_scope">${v}</td>`;
@@ -172,6 +178,7 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
         element += '</tbody>';
         element += '</table>';
         box.innerHTML = element;
+        console.log("data", data);
 
         kintone.app.record.getSpaceElement('order-detail').appendChild(box);
 
@@ -192,8 +199,6 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
     });
 
     kintone.events.on(EventTrigger, function (event) {
-        console.log(event);
-        kintone.app.record.setFieldShown('発注明細', false);
         const company_name = event.record.company_name.value;
         const start_date = event.record.start_date.value;
         const company_id = event.record.company_id.value;
@@ -214,18 +219,18 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                 categories.sort((a, b) => {
                     return a.priority - b.priority;
                 });
-
-                if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value == event.record.start_date.value) {
+                let data = JSON.parse(event.record.body.value);
+                if (data.length == 7 && data[0].value.日付.value == event.record.start_date.value) {
                     // 7日分のデータと開始日が一致する場合は何もしない
-                } else if (event.record.発注明細.value.length == 7 && event.record.発注明細.value[0].value.日付.value != event.record.start_date.value) {
+                } else if (data.length == 7 && data[0].value.日付.value != event.record.start_date.value) {
                     // 7日分のデータがあり、開始日が一致しない場合は日付を更新
                     let base_date = new Date(event.record.start_date.value);
                     for (let i = 0; i < 7; i++) {
                         const d = new Date(base_date).setDate(base_date.getDate() + i);
-                        event.record.発注明細.value[i].value.日付.value = new Date(d).toISOString().slice(0, 10);
+                        data[i].value.日付.value = new Date(d).toISOString().slice(0, 10);
                     }
                 } else {
-                    event.record.発注明細.value = [];
+                    data = [];
                     //  7日分のデータを作成
                     let base_date = new Date(event.record.start_date.value);
                     for (let i = 0; i < 7; i++) {
@@ -249,12 +254,11 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                                 "value": ""
                             }
                         }
-                        event.record.発注明細.value.push({
+                        data.push({
                             "value": row
                         });
                     }
                 }
-                // console.log(event.record.発注明細.value);
                 // space取得 
                 const box = document.createElement('div');
                 box.id = 'order-detail';
@@ -272,7 +276,7 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                 element += '</tr>';
                 element += '</thead>';
                 element += '<tbody>';
-                for (const row of event.record.発注明細.value) {
+                for (const row of data) {
                     element += '<tr>';
                     element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
                     element += `</tr>`;
@@ -280,10 +284,17 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
                         element += '<tr>';
                         element += `<td class="label">${time_kubun[kubun].label}</td>`;
                         for (const category of categories) {
-                            element += `<td class="count_scope save_scope"><input type="number" value="${Number(row.value[time_kubun[kubun].value + "_" + category.key].value)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
+                            if (row.value[time_kubun[kubun].value + "_" + category.key] == undefined) {
+                                // 初期値0として登録
+                                row.value[time_kubun[kubun].value + "_" + category.key] = {
+                                    "value": 0
+                                }
+                            }
+                            let val = row.value[time_kubun[kubun].value + "_" + category.key].value;
+                            element += `<td class="count_scope save_scope"><input type="number" value="${Number(val)}" data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_" + category.key}"></td>`;
                         }
                         // 備考欄 textarea
-                        let v = row.value[time_kubun[kubun].value + "_備考"].value == undefined ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
+                        let v = row.value[time_kubun[kubun].value + "_備考"].value == null ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
                         element += `<td class="note_scope"><textarea data-datekey="${row.value.日付.value}" data-fieldkey="${time_kubun[kubun].value + "_備考"}">${v}</textarea></td>`;
                         element += '</tr>';
                     }
@@ -360,8 +371,8 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
             "app": kintone.app.getId(),
             "id": event.record.$id.value,
             "record": {
-                "発注明細": {
-                    "value": data
+                "body": {
+                    "value": JSON.stringify(data, null, 2)
                 }
             }
         };

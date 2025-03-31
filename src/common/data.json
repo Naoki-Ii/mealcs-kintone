@@ -1,0 +1,1829 @@
+[
+    {
+        "id": "3389",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "5"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "2"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-07"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3390",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "4"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-08"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3391",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-09"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3392",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-10"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3393",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-11"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3394",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-12"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    },
+    {
+        "id": "3395",
+        "value": {
+            "b_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_注文数": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_肉_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_めん_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_卵_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_揚げ物_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ワーファリン_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_青魚_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_納豆_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きのこ_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_海そう_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_カレー_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_糖尿食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_腎臓食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_減塩食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_ムース": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "日付": {
+                "type": "DATE",
+                "value": "2025-04-13"
+            },
+            "b_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_その他_禁食_": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "d_備考": {
+                "type": "MULTI_LINE_TEXT",
+                "value": ""
+            },
+            "b_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_きざみ食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "b_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "l_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "d_検食": {
+                "type": "NUMBER",
+                "value": "1"
+            },
+            "b_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "l_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            },
+            "d_低残渣食": {
+                "type": "NUMBER",
+                "value": "0"
+            }
+        }
+    }
+]

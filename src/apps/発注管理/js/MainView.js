@@ -177,6 +177,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         categories.sort((a, b) => {
             return a.priority - b.priority;
         });
+        console.log("categories", categories);
         let csv_data = "";
         //表示する一覧
         const DisplayList = [
@@ -220,8 +221,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                         RowClass = "odd";
                     }
                     let element = "";
-                    // record.発注明細.value のdateとbase_dateが一致するものだけを表示
-                    const row = record.発注明細.value.find((row) => row.value.日付.value == formatDate2(new Date(base_date), "yyyy-MM-dd"));
+                    // record.body.value のdateとbase_dateが一致するものだけを表示
+                    const data = JSON.parse(record.body.value);
+                    const row = data.find((row) => row.value.日付.value == formatDate2(new Date(base_date), "yyyy-MM-dd"));
                     if (row == undefined) {
                         console.log(record.$id.value);
                         console.log("row is undefined");
@@ -241,7 +243,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                         element += `<td>${total}</td>`;
                         csv_data += `${total},`;
                         for (const category of categories) {
-                            let val = row.value[time_kubun[kubun].value + "_" + category.key].value;
+                            let val = row.value[time_kubun[kubun].value + "_" + category.key] == null ? 0 : row.value[time_kubun[kubun].value + "_" + category.key].value;
                             csv_data += `${val},`;
 
                             // 履歴表示機能
@@ -250,9 +252,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                             if (hisotry_diff_info[record.company_id.value] != undefined) {
                                 Object.keys(hisotry_diff_info[record.company_id.value]).forEach(key => {
                                     if (hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value] != undefined) {
-                                        if (hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key] != undefined) {
+                                        if (hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][val] != undefined) {
                                             const history_date = hisotry_diff_info[record.company_id.value][key]["date"];
-                                            const history_data = hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key]["value"];
+                                            const history_data = hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][val]["value"];
                                             history_info_element += `<div class="balloon" data-date="${history_date}" data-field="${time_kubun[kubun].value + "_" + category.key}">${history_date} : <span class="strong">${history_data}</span></div>`;
                                             display_count++;
                                         }
@@ -269,7 +271,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                                 element += `<td>${val}</td>`;
                             }
                         }
-                        let v = row.value[time_kubun[kubun].value + "_備考"].value;
+                        let v = row.value[time_kubun[kubun].value + "_備考"].value == null ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
                         csv_data += `${v.replace(/\n/g, " ")},`;
                         // \nを<br>に変換
                         v = v.replace(/\n/g, "<br>");
