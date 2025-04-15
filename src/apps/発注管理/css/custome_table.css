@@ -1,12 +1,12 @@
 #index_customise {
-    width: 2500px;
+    min-width: 2500px;
 }
 
 #index_customise table {
     table-layout: fixed;
     border-collapse: collapse;
     background-color: #fff;
-    width: auto;
+    width: max-content;
 }
 
 #index_customise table tbody tr.odd {
@@ -43,7 +43,7 @@
 
 #index_customise table th {
     position: sticky;
-    background-color: #fff !important;
+    background-color: #fff;
     border: 1px solid #c1ddf7;
     top: 40px;
     z-index: 5;
@@ -107,6 +107,72 @@
     margin-right: 5px;
 }
 
-.kintone-app-headermenu-space .header .filter #filter {
-    padding: 0px 10px;
+.header #filter_date {
+    height: 40px;
+    border: 1px solid #e3e7e8;
+    box-shadow: 2px 2px 4px #f5f5f5 inset, -2px -2px 4px #f5f5f5 inset;
+    border-width: 1px;
+    border-style: solid;
+    box-sizing: border-box;
+    font-size: 14px;
+    background-color: #fff;
+    color: #333;
+    padding: 10px;
+}
+
+#index_customise table thead th.link_icon {
+    position: sticky;
+    left: 0;
+    z-index: 8;
+}
+
+#index_customise table tbody td.link_icon {
+    position: sticky;
+    left: 0;
+    z-index: 3;
+}
+
+#index_customise table thead th.company_name {
+    position: sticky;
+    left: 47px;
+    z-index: 8;
+}
+
+#index_customise table tbody td.company_name {
+    position: sticky;
+    left: 47px;
+    z-index: 3;
+}
+
+#index_customise table thead th.kubun_icon {
+    position: sticky;
+    left: 214px;
+    z-index: 8;
+}
+
+#index_customise table tbody td.kubun_icon {
+    position: sticky;
+    left: 214px;
+    z-index: 3;
+}
+
+#index_customise table thead th.total {
+    position: sticky;
+    left: 276px;
+    z-index: 8;
+}
+
+#index_customise table tbody td.total {
+    position: sticky;
+    left: 276px;
+    z-index: 3;
+}
+
+#index_customise table tbody td.value:hover {
+    cursor: pointer;
+}
+
+#index_customise table thead .kubun.hover_active,
+#index_customise table tbody .kubun_icon.hover_active {
+    background-color: #f89a4e;
 }

@@ -1,0 +1,16 @@
+{
+  "app": 17,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist-dev/チェック項目保存/index.js"
+    ],
+    "css": [
+      "dist-dev/チェック項目保存/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}

@@ -1,5 +1,5 @@
 import { getEnvGlobalConfig } from '../../../typescript/libs/envConfig';
-import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/function';
+import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/function';
 (function () {
     "use strict";
     const currentEnvGlobalConfig = getEnvGlobalConfig();
@@ -31,8 +31,20 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
     }
 
     kintone.events.on("app.record.detail.show", async function (event) {
-        const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
-        const history_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `order_id = ${event.record.$id.value} and company_id = ${event.record.company_id.value} order by レコード番号 asc limit 500` }, "GET", "mul");
+        const start_date = event.record.start_date.value;
+        const SearchDate1 = new Date(start_date).setDate(new Date(start_date).getDate() - 7);
+        const SearchDateString1 = formatDate2(new Date(SearchDate1), "yyyy-MM-dd");
+        const SearchDate2 = new Date(start_date).setDate(new Date(start_date).getDate() + 7);
+        const SearchDateString2 = formatDate2(new Date(SearchDate2), "yyyy-MM-dd");
+        const category_request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
+        const history_request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `order_id = ${event.record.$id.value} and company_id = ${event.record.company_id.value} order by レコード番号 asc limit 500` }, "GET", "mul");
+        const last_order_request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.ORDER.AppID, "query": `company_id = ${event.record.company_id.value} and start_date = "${SearchDateString1}" limit 1`, "fields": ["$id"] }, "GET", "mul");
+        const next_order_request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.ORDER.AppID, "query": `company_id = ${event.record.company_id.value} and start_date = "${SearchDateString2}" limit 1`, "fields": ["$id"] }, "GET", "mul");
+        const response = await Promise.all([category_request, history_request, last_order_request, next_order_request]);
+        const category_response = response[0];
+        const history_response = response[1];
+        const last_order_response = response[2];
+        const next_order_response = response[3];
         let categories = [];
         const info_icon = "https://order-mealcs.com/img/info_icon.png";
         const history_data_json = [];
@@ -181,6 +193,42 @@ import { formatDate, KintoneRestAPI, formatDateTime } from '../../../common/func
         console.log("data", data);
 
         kintone.app.record.getSpaceElement('order-detail').appendChild(box);
+
+        const last_btn = document.createElement('button');
+        last_btn.innerText = "先週";
+        last_btn.className = "last_order";
+
+        last_btn.onclick = async function () {
+            if (last_order_response.records.length > 0) {
+                const last_order_id = last_order_response.records[0].$id.value;
+                const url = `https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${currentEnvGlobalConfig.APP.ORDER.AppID}/show#record=${last_order_id}`;
+                window.open(url, '_self');
+            } else {
+                alert("先週の発注がありません");
+            }
+        }
+
+        const next_btn = document.createElement('button');
+        next_btn.innerText = "来週";
+        next_btn.className = "next_order";
+        next_btn.onclick = async function () {
+            if (next_order_response.records.length > 0) {
+                const next_order_id = next_order_response.records[0].$id.value;
+                const url = `https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${currentEnvGlobalConfig.APP.ORDER.AppID}/show#record=${next_order_id}`;
+                window.open(url, '_self');
+            } else {
+                alert("来週の発注がありません");
+            }
+        }
+
+        if ($(".gaia-argoui-app-toolbar-statusmenu .last_order").length > 0) {
+            $(".gaia-argoui-app-toolbar-statusmenu .last_order").remove();
+        }
+        if ($(".gaia-argoui-app-toolbar-statusmenu .next_order").length > 0) {
+            $(".gaia-argoui-app-toolbar-statusmenu .next_order").remove();
+        }
+        // $(".gaia-argoui-app-toolbar-statusmenu").append(last_btn);
+        // $(".gaia-argoui-app-toolbar-statusmenu").append(next_btn);
 
         $('.history_info_box').each(function () {
             const balloons = $(this).children().get().reverse();

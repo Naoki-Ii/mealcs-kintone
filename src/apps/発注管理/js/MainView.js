@@ -41,12 +41,44 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
             "lang": "default"
         }
         //フィールド情報取得
-        const fieldlist = await KintoneRestAPI(GetFieldElement, "GET", "field");
-        const category_response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
-        const list = await KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" order by 表示優先順位 asc limit 500` }, "GET", "mul");
+        const request1 = KintoneRestAPI(GetFieldElement, "GET", "field");
+        const request2 = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
+        const request3 = KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" order by 表示優先順位 asc limit 500` }, "GET", "mul");
+        const response = await Promise.all([request1, request2, request3]);
+        const fieldlist = response[0];
+        const category_response = response[1];
+        const list = response[2];
         const records = list.records;
-        const info_icon = "https://order-mealcs.com/img/info_icon.png";
+        let SearchQuery = "";
+        for (const record of records) {
+            if (SearchQuery != "") {
+                SearchQuery += " or ";
+            }
+            SearchQuery += `order_id = ${record.$id.value}`;
+        }
+        if (SearchQuery == "") {
+            return event;
+        }
+        const TotalSearchQuery = `(${SearchQuery}) and order_date = "${formatDate2(new Date(base_date), "yyyy-MM-dd")}" limit 500`;
+        const check_list = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID, "query": TotalSearchQuery }, "GET", "mul");
 
+        const check_json = {};
+        for (const record of check_list.records) {
+            const order_id = record.order_id.value;
+            const data = {
+                "record_id": record.$id.value,
+                "order_id": record.order_id.value,
+                "order_date": record.order_date.value,
+                "company_id": record.company_id.value,
+                "check_list": record.チェック一覧.value,
+            }
+            if (check_json[order_id] == undefined) {
+                check_json[order_id] = data;
+            }
+        }
+        console.log("check_json", check_json);
+
+        const info_icon = "https://order-mealcs.com/img/info_icon.png";
         const recordsPerBatch = 20; // 一度に処理するレコード数
         let queries = [];
         for (let i = 0; i < records.length; i += recordsPerBatch) {
@@ -186,11 +218,10 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 'custome_view': true,
                 'custome_label': (function () {
                     csv_data += "施設名,日付,";
-                    let element = `<th style="min-width:10px;"></th>`;
-                    element += `<th>施設名</th>`;
-                    element += `<th class="date">日付</th>`;
-                    element += `<th class="kubun" style="width:45px;">区分</th>`;
-                    element += `<th class="kubun" style="width:45px;">合計</th>`;
+                    let element = `<th style="width:30px;" class="link_icon"></th>`;
+                    element += `<th style="width:150px;" class="company_name">施設名</th>`;
+                    element += `<th class="kubun kubun_icon" style="width:45px;">区分</th>`;
+                    element += `<th class="kubun total" data-kubun="合計" style="width:45px;">合計</th>`;
                     for (const kubun of Object.keys(time_kubun)) {
                         csv_data += time_kubun[kubun].label + "_" + "合計" + ",";
                         for (const category of categories) {
@@ -202,9 +233,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                     csv_data += "\n";
 
                     for (const category of categories) {
-                        element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
+                        element += `<th class="kubun" data-kubun="${category.key}" style="width:45px;">${category.label}</th>`;
                     }
-                    element += `<th class="kubun" style="min-width:200px;">備考</th>`;
+                    element += `<th class="kubun" data-kubun="備考" style="width:200px;">備考</th>`;
                     return element;
                 }),
                 'width': '140',
@@ -230,22 +261,33 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                         window.alert("正しいデータが出力できませんでした。システム管理者にお問い合わせ下さい");
                         return "";
                     }
+
+                    let ThisCheckList = check_json[record.$id.value] == undefined ?
+                        {
+                            "record_id": 0,
+                            "order_id": record.$id.value,
+                            "order_date": formatDate2(new Date(base_date), "yyyy-MM-dd"),
+                            "company_id": record.company_id.value,
+                            "check_list": []
+                        }
+                        : check_json[record.$id.value];
+
                     element += `<tr class="${RowClass}">`;
-                    element += `<td style="text-align:center;" rowspan="4"><a href="https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/show#record=${record.$id.value}" target="_blank"><img src="https://static.cybozu.com/contents/k/image/argo/component/recordlist/record-detail.png"></a></td>`;
-                    element += `<td rowspan="4" style="width:140px;">${record.ログイン名.value}</td>`;
-                    element += `<td rowspan="4" class="date">${row.value.日付.value}</td>`;
+                    element += `<td style="text-align:center;" rowspan="4" class="link_icon"><a href="https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/show#record=${record.$id.value}" target="_blank"><img src="https://static.cybozu.com/contents/k/image/argo/component/recordlist/record-detail.png"></a></td>`;
+                    element += `<td rowspan="4" style="width:140px;" class="company_name">${record.ログイン名.value}</td>`;
                     element += `</tr>`;
                     csv_data += `${record.ログイン名.value},${row.value.日付.value},`;
                     for (const kubun of Object.keys(time_kubun)) {
                         element += `<tr class="${RowClass}">`;
-                        element += `<td class="label" style="text-align:center;">${time_kubun[kubun].label}</td>`;
+                        element += `<td class="label kubun_icon" data-order_id="${record.$id.value}" data-cateogyr="${time_kubun[kubun].label}" style="text-align:center;">${time_kubun[kubun].label}</td>`;
                         const total = Number(row.value[time_kubun[kubun].value + "_注文数"].value) + Number(row.value[time_kubun[kubun].value + "_検食"].value);
-                        element += `<td>${total}</td>`;
+                        let add_class = check_system(ThisCheckList, time_kubun[kubun].label, "合計");
+                        element += `<td class="value total ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="合計" data-category="${time_kubun[kubun].label}">${total}</td>`;
                         csv_data += `${total},`;
                         for (const category of categories) {
                             let val = row.value[time_kubun[kubun].value + "_" + category.key] == null ? 0 : row.value[time_kubun[kubun].value + "_" + category.key].value;
                             csv_data += `${val},`;
-
+                            let add_class = check_system(ThisCheckList, time_kubun[kubun].label, category.key);
                             // 履歴表示機能
                             let history_info_element = "<div class='history_info_box'>";
                             let display_count = 0;
@@ -265,17 +307,19 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                             if (val == 0) {
                                 val = "";
                             }
+
                             if (display_count > 1) {
-                                element += `<td>${val}<img src="${info_icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
+                                element += `<td class="value ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="${category.key}" data-category="${time_kubun[kubun].label}">${val}<img src="${info_icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
                             } else {
-                                element += `<td>${val}</td>`;
+                                element += `<td class="value ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="${category.key}" data-category="${time_kubun[kubun].label}">${val}</td>`;
                             }
                         }
                         let v = row.value[time_kubun[kubun].value + "_備考"].value == null ? "" : row.value[time_kubun[kubun].value + "_備考"].value;
                         csv_data += `${v.replace(/\n/g, " ")},`;
                         // \nを<br>に変換
                         v = v.replace(/\n/g, "<br>");
-                        element += `<td class="note_scope">${v}</td>`;
+                        let other_add_class = check_system(ThisCheckList, time_kubun[kubun].label, "備考");
+                        element += `<td class="note_scope value ${other_add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="備考" data-category="${time_kubun[kubun].label}">${v}</td>`;
                         element += `</tr>`;
                     }
                     csv_data = csv_data.slice(0, -1);
@@ -371,7 +415,246 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 $(this).siblings('.history_info_box').css('display', 'none');
             }
         );
+
+        const handleCellClickEvent = async function (dom, e) {
+            // イベントを一度解除
+            $(dom).off("click");
+            try {
+                const target = $(e.target);
+                let check_id = target.data("check_id");
+                const key = target.data("key");
+                const category = target.data("category");
+                const order_id = target.data("order_id");
+                const company_id = target.data("company_id");
+                let body = {};
+                let method = "POST";
+                let check_list_data = [];
+                if (check_id == 0) {
+                    const GetResponse = await KintoneRestAPI({
+                        "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID,
+                        "query": `company_id = ${company_id} and order_id = ${order_id} and order_date = "${formatDate2(new Date(base_date), "yyyy-MM-dd")}" limit 1`,
+                    }, "GET", "mul");
+                    if (GetResponse.records.length == 0) {
+                        Object.keys(time_kubun).forEach(function (kubun) {
+                            check_list_data.push({
+                                "value": {
+                                    "category": {
+                                        "value": time_kubun[kubun].label
+                                    },
+                                    "kubun": {
+                                        "value": "合計"
+                                    },
+                                    "check_flg": {
+                                        "value": []
+                                    }
+                                }
+                            });
+                            check_list_data.push({
+                                "value": {
+                                    "category": {
+                                        "value": time_kubun[kubun].label
+                                    },
+                                    "kubun": {
+                                        "value": "備考"
+                                    },
+                                    "check_flg": {
+                                        "value": []
+                                    }
+                                }
+                            });
+                            for (const category of categories) {
+                                check_list_data.push({
+                                    "value": {
+                                        "category": {
+                                            "value": time_kubun[kubun].label
+                                        },
+                                        "kubun": {
+                                            "value": category.key
+                                        },
+                                        "check_flg": {
+                                            "value": []
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                        body = {
+                            "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID,
+                            "record": {
+                                "order_id": {
+                                    "value": order_id
+                                },
+                                "company_id": {
+                                    "value": company_id
+                                },
+                                "order_date": {
+                                    "value": formatDate2(new Date(base_date), "yyyy-MM-dd")
+                                },
+                                "チェック一覧": {
+                                    "value": check_list_data
+                                }
+                            }
+                        }
+                    } else {
+                        method = "PUT";
+                        check_list_data = GetResponse.records[0].チェック一覧.value;
+                        body = {
+                            "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID,
+                            "id": GetResponse.records[0].$id.value,
+                            "record": {
+                                "チェック一覧": {
+                                    "value": check_list_data
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    method = "PUT";
+                    const response = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID, "id": check_id }, "GET", "single");
+                    check_list_data = response.record.チェック一覧.value;
+                    // categoriesに存在していてcheck_list_dataに存在しない場合は追加
+                    for (const category of categories) {
+                        const check_list = check_list_data.find((item) => item.value.kubun.value == category.key);
+                        if (check_list == undefined) {
+                            Object.keys(time_kubun).forEach(function (kubun) {
+                                check_list_data.push({
+                                    "value": {
+                                        "category": {
+                                            "value": time_kubun[kubun].label
+                                        },
+                                        "kubun": {
+                                            "value": category.key
+                                        },
+                                        "check_flg": {
+                                            "value": []
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    }
+                    body = {
+                        "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID,
+                        "id": check_id,
+                        "record": {
+                            "チェック一覧": {
+                                "value": check_list_data
+                            }
+                        }
+                    }
+                }
+
+                if (target.hasClass("checked")) {
+                    // クリックした要素がすでに選択されている場合
+                    check_list_data = add_check_system({ "check_list": check_list_data }, category, key, []);
+                    body.record.チェック一覧.value = check_list_data;
+                    await KintoneRestAPI(body, method, "single");
+                    target.removeClass("checked");
+                } else {
+                    // クリックした要素が選択されていない場合
+                    check_list_data = add_check_system({ "check_list": check_list_data }, category, key, ["済"]);
+                    body.record.チェック一覧.value = check_list_data;
+                    await KintoneRestAPI(body, method, "single");
+                    target.addClass("checked");
+                }
+                console.log("check_list_data", check_list_data);
+            } catch (error) {
+                console.log(error);
+                window.alert("チェック保存に失敗しました");
+            } finally {
+                // 処理が終わったら再度イベントを設定
+                $(dom).on("click", async function (e) {
+                    await handleCellClickEvent(dom, e);
+                });
+            }
+        };
+
+        // セル反転イベント
+        const dom = "#index_customise table tbody td.value";
+        $(dom).on("click", async function (e) {
+            await handleCellClickEvent(dom, e);
+        });
+
+        // ホバー色付イベント
+        $(dom).hover(
+            function (e) {
+                const target = $(e.target);
+                const key = target.data("key");
+                const category = target.data("category");
+                const order_id = target.data("order_id");
+
+                // リセット
+                $("table tbody .kubun_icon").removeClass("hover_active");
+                $("table thead .kubun").removeClass("hover_active");
+
+                // 再度クラス追加
+                $("table tbody .kubun_icon[data-cateogyr='" + category + "'][data-order_id='" + order_id + "']").addClass("hover_active");
+                $("table thead .kubun[data-kubun='" + key + "']").addClass("hover_active");
+            }
+        );
+        // ホバー解除イベント
+        $(dom).mouseleave(function (e) {
+            $("table tbody .kubun_icon").removeClass("hover_active");
+            $("table thead .kubun").removeClass("hover_active");
+        });
+
+
+        let no_data_check_json = {};
+        // 注文がない場合の非表示処理
+        $(dom).each(function () {
+            const target = $(this);
+            let check_id = target.data("check_id");
+            const key = target.data("key");
+            const category = target.data("category");
+            const order_id = target.data("order_id");
+            const company_id = target.data("company_id");
+            const value = target.text();
+            if (key == "備考") {
+                return;
+            }
+            if (no_data_check_json[key] == undefined) {
+                no_data_check_json[key] = {
+                    "count": 0,
+                }
+            }
+            no_data_check_json[key].count += Number(value);
+        });
+        console.log("no_data_check_json", no_data_check_json);
+
+        Object.keys(no_data_check_json).forEach(function (key) {
+            if (no_data_check_json[key].count == 0) {
+                $("#index_customise table thead .kubun[data-kubun='" + key + "']").css("display", "none");
+                $("#index_customise table tbody .value[data-key='" + key + "']").css("display", "none");
+            }
+        });
+        // 途中で項目足した場合にも動くように
     });
+
+    function check_system(db, category, kubun) {
+        let response_flg = "";
+        for (const list of db.check_list) {
+            const list_category = list.value.category.value;
+            const list_kubun = list.value.kubun.value;
+            const check_flg = list.value.check_flg.value;
+            if (list_category == category && list_kubun == kubun && check_flg.length > 0) {
+                response_flg = "checked";
+                break;
+            }
+        }
+        return response_flg;
+    }
+
+    function add_check_system(db, category, kubun, check_flg) {
+        for (var i = 0; i < db.check_list.length; i++) {
+            const list_category = db.check_list[i].value.category.value;
+            const list_kubun = db.check_list[i].value.kubun.value;
+            if (list_category == category && list_kubun == kubun) {
+                db.check_list[i].value.check_flg.value = check_flg;
+                break;
+            }
+        }
+        return db.check_list;
+    }
 
     function getMonday(base_date) {
         const d = new Date(base_date);

@@ -1,5 +1,5 @@
 table.edit_table {
-    width: auto;
+    width: max-content;
     table-layout: fixed;
     border-collapse: collapse;
     background: #fff;
@@ -90,6 +90,36 @@ table .info_icon:hover {
 
 #index_customise table tbody td .history_info_box {
     z-index: 10;
+}
+
+.last_order,
+.next_order,
+.header #filter,
+.header #output {
+    border: 1px solid #e3e7e8;
+    background-color: #3498db;
+    color: #fff;
+    font-size: 16px;
+    margin-right: 10px;
+    height: auto;
+    padding: 10px 20px;
+    min-width: 100px;
+}
+
+.last_order:hover,
+.next_order:hover,
+.header #filter:hover,
+.header #output:hover {
+    background-color: #1D6FA5;
+}
+
+#index_customise table tbody td.value.checked {
+    background-color: #f0ee64;
+}
+
+#index_customise table tbody td.total {
+    color: #ff4343;
+    font-weight: bold;
 }
 
 @import url("css/custome_table.css");
