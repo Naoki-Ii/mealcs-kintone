@@ -227,8 +227,8 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
         if ($(".gaia-argoui-app-toolbar-statusmenu .next_order").length > 0) {
             $(".gaia-argoui-app-toolbar-statusmenu .next_order").remove();
         }
-        // $(".gaia-argoui-app-toolbar-statusmenu").append(last_btn);
-        // $(".gaia-argoui-app-toolbar-statusmenu").append(next_btn);
+        $(".gaia-argoui-app-toolbar-statusmenu").append(last_btn);
+        $(".gaia-argoui-app-toolbar-statusmenu").append(next_btn);
 
         $('.history_info_box').each(function () {
             const balloons = $(this).children().get().reverse();
