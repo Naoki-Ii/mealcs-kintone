@@ -267,7 +267,10 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                 categories.sort((a, b) => {
                     return a.priority - b.priority;
                 });
-                let data = JSON.parse(event.record.body.value);
+                let data = [];
+                if (event.record.body.value != undefined && event.record.body.value != "") {
+                    data = JSON.parse(event.record.body.value);
+                }
                 if (data.length == 7 && data[0].value.日付.value == event.record.start_date.value) {
                     // 7日分のデータと開始日が一致する場合は何もしない
                 } else if (data.length == 7 && data[0].value.日付.value != event.record.start_date.value) {
