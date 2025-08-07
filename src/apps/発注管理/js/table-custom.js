@@ -125,12 +125,12 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
         // space取得 
         const box = document.createElement('div');
         box.id = 'order-detail';
-        let element = '<table class="edit_table">';
+        let element = '<table class="edit_table view_mode">';
         element += '<thead>';
         element += '<tr>';
         element += `<th class="date">日付</th>`;
-        element += `<th class="kubun">区分</th>`
-        element += `<th class="kubun">合計注文数</th>`
+        element += `<th class="kubun" id="category_master">区分</th>`
+        element += `<th class="kubun" id="total_num">合計注文数</th>`
         for (const category of categories) {
             element += `<th class="kubun" style="width:45px;">${category.label}</th>`;
         }

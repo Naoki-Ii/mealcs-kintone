@@ -3,6 +3,7 @@ node_modules
 .prettierrc
 .eslintrc.js
 up
+up.sh
 Icon
 deploy
 deployall

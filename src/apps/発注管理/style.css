@@ -1,8 +1,9 @@
 table.edit_table {
-    width: max-content;
-    table-layout: fixed;
+    min-width: 1200px;
+    /* スクロールを強制的に発生させる */
     border-collapse: collapse;
     background: #fff;
+    display: table;
 }
 
 .edit_table th,
@@ -123,3 +124,109 @@ table .info_icon:hover {
 }
 
 @import url("css/custome_table.css");
+
+/* スクロールコンテナ設定 */
+#order-detail {
+    overflow-x: auto;
+    overflow-y: auto;
+    max-height: 80vh;
+    max-width: 1400px;
+    position: relative;
+}
+
+/* ヘッダー行の縦スクロール固定 */
+.edit_table thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.edit_table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #c5dbff;
+    min-width: 50px;
+}
+
+/* 日付列の横スクロール固定 */
+.edit_table .date {
+    position: sticky !important;
+    left: 0 !important;
+    z-index: 5;
+    background-color: #c5dbff;
+}
+
+/* ヘッダーの日付列（左上角） */
+.edit_table thead th.date {
+    position: sticky !important;
+    left: 0 !important;
+    top: 0 !important;
+    z-index: 15 !important;
+    background-color: #c5dbff;
+}
+
+/* 区分列の横スクロール固定 */
+.edit_table td.label {
+    position: sticky !important;
+    left: 107px !important;
+    z-index: 4;
+    background-color: #c5dbff;
+}
+
+/* ヘッダーの区分列 */
+.edit_table thead th.kubun:nth-of-type(1) {
+    position: sticky !important;
+    left: 80px !important;
+    top: 0 !important;
+    z-index: 14 !important;
+    background-color: #c5dbff;
+}
+
+/* 合計注文数列の横スクロール固定（詳細画面） */
+.view_mode.edit_table tbody tr td:nth-child(2),
+#total_num {
+    position: sticky !important;
+    left: 173px !important;
+    z-index: 3;
+    background-color: #fff;
+}
+
+#category_master {
+    position: sticky !important;
+    left: 107px !important;
+    top: 0 !important;
+    z-index: 14 !important;
+    background-color: #c5dbff;
+}
+
+#total_num {
+    background-color: #c5dbff;
+}
+
+.edit_table thead th.date {
+    min-width: 90px;
+}
+
+.edit_table thead th.kubun:nth-of-type(2) {
+    position: sticky !important;
+    left: 107px !important;
+    top: 0 !important;
+    z-index: 14 !important;
+    background-color: #c5dbff;
+}
+
+/* ヘッダーの合計注文数列 */
+.edit_table.view_mode thead th.kubun:nth-of-type(2) {
+    position: sticky !important;
+    left: 50px !important;
+    top: 0 !important;
+    z-index: 14 !important;
+    background-color: #c5dbff;
+}
+
+
+#appForm-gaia,
+#header-global-navigation-root div,
+.gaia-argoui-floater-float {
+    z-index: 20 !important;
+}
