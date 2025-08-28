@@ -1,6 +1,5 @@
 table.edit_table {
-    min-width: 1200px;
-    /* スクロールを強制的に発生させる */
+    min-width: 2100px;
     border-collapse: collapse;
     background: #fff;
     display: table;
@@ -130,7 +129,7 @@ table .info_icon:hover {
     overflow-x: auto;
     overflow-y: auto;
     max-height: 80vh;
-    max-width: 1400px;
+    max-width: 2100px;
     position: relative;
 }
 
