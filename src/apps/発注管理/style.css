@@ -1,5 +1,5 @@
 table.edit_table {
-    min-width: 2100px;
+    min-width: 2400px;
     border-collapse: collapse;
     background: #fff;
     display: table;
@@ -129,7 +129,7 @@ table .info_icon:hover {
     overflow-x: auto;
     overflow-y: auto;
     max-height: 80vh;
-    max-width: 2100px;
+    max-width: 2400px;
     position: relative;
 }
 
