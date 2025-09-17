@@ -31,6 +31,10 @@
         "CHECKLIST_DB": {
             "AppName": "チェック項目保存",
             "AppID": 17
+        },
+        "BANNER_SETTING": {
+            "AppName": "バナー表示管理",
+            "AppID": 20
         }
     }
 }

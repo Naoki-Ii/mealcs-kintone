@@ -1,0 +1,16 @@
+{
+  "app": 20,
+  "scope": "ALL",
+  "desktop": {
+    "js": [
+      "dist-dev/バナー表示管理/index.js"
+    ],
+    "css": [
+      "dist-dev/バナー表示管理/style.min.css"
+    ]
+  },
+  "mobile": {
+    "js": [],
+    "css": []
+  }
+}
