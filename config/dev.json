@@ -5,7 +5,9 @@
             "AppName": "発注管理",
             "AppID": 6,
             "CUSTOMIZE": {
-                "MainView": "5520191"
+                "MainView": [
+                    5520191
+                ]
             }
         },
         "SETTING": {

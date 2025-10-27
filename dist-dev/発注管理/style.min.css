@@ -117,7 +117,7 @@
     border-width: 1px;
     border-style: solid;
     box-sizing: border-box;
-    font-size: 14px;
+    font-size: 16px;
     background-color: #fff;
     color: #333;
     padding: 10px;
@@ -267,6 +267,10 @@ table .info_icon:hover {
     cursor: pointer;
 }
 
+#index_customise {
+    background-color: #fff;
+}
+
 #index_customise table tbody td {
     position: relative;
     text-align: center;
@@ -410,4 +414,27 @@ table .info_icon:hover {
 #header-global-navigation-root div,
 .gaia-argoui-floater-float {
     z-index: 20 !important;
+}
+
+/* フィルター用セレクトボックス */
+.filter-select {
+    height: 40px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-width: 150px;
+}
+
+/* 検索結果0件時のメッセージ */
+.no-results-message {
+    font-size: 24px;
+    color: #888;
+    text-align: center;
+    padding: 50px 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

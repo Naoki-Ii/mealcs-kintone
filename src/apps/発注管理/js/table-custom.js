@@ -47,6 +47,7 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
         const next_order_response = response[3];
         let categories = [];
         const info_icon = "https://order-mealcs.com/img/info_icon.png";
+        const info_red_icon = "https://order-mealcs.com/img/info_red_icon.png";
         const history_data_json = [];
         for (var n = 0; n < history_response.records.length; n++) {
             try {
@@ -55,6 +56,7 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                 const change_date = formatDateTime(new Date(record.作成日時.value), "MM/dd HH:mm");
                 history_data_json[n] = {
                     "date": change_date,
+                    "createdAt": record.作成日時.value,
                     "data": {}
                 }
                 for (const row of data) {
@@ -89,6 +91,7 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                         if (hisotry_diff_info[p] == undefined) {
                             hisotry_diff_info[p] = {
                                 "date": history_list.date,
+                                "createdAt": history_list.createdAt,
                                 "data": {}
                             };
                         }
@@ -160,6 +163,27 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                     // 履歴表示機能
                     let history_info_element = "<div class='history_info_box'>";
                     let display_count = 0;
+                    let hasRecentChange = false;
+
+                    // 現在時刻を基準に範囲を計算（毎日15時リセット）
+                    const now = new Date();
+                    const currentHour = now.getHours();
+
+                    let startTime, endTime;
+
+                    if (currentHour < 15) {
+                        // 15時より前: 前日15時 〜 現在時刻
+                        startTime = new Date(now);
+                        startTime.setDate(startTime.getDate() - 1);
+                        startTime.setHours(15, 0, 0, 0);
+                        endTime = new Date(now);
+                    } else {
+                        // 15時以降: 当日15時 〜 現在時刻
+                        startTime = new Date(now);
+                        startTime.setHours(15, 0, 0, 0);
+                        endTime = new Date(now);
+                    }
+
                     for (const key in hisotry_diff_info) {
                         if (hisotry_diff_info[key]["data"][row.value.日付.value] != undefined) {
                             if (hisotry_diff_info[key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key] != undefined) {
@@ -167,6 +191,12 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                                 const history_data = hisotry_diff_info[key]["data"][row.value.日付.value][time_kubun[kubun].value + "_" + category.key]["value"];
                                 history_info_element += `<div class="balloon" data-date="${history_date}" data-field="${time_kubun[kubun].value + "_" + category.key}">${history_date} : <span class="strong">${history_data}</span></div>`;
                                 display_count++;
+
+                                // 赤いアイコン判定: 現在時刻基準の範囲内の変更か確認（15時リセット）
+                                const createdAt = new Date(hisotry_diff_info[key]["createdAt"]);
+                                if (createdAt >= startTime && createdAt <= endTime) {
+                                    hasRecentChange = true;
+                                }
                             }
                         }
                     }
@@ -175,7 +205,8 @@ import { formatDate2, KintoneRestAPI, formatDateTime } from '../../../common/fun
                         val = "";
                     }
                     if (display_count > 1) {
-                        element += `<td>${val}<img src="${info_icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
+                        const icon = hasRecentChange ? info_red_icon : info_icon;
+                        element += `<td>${val}<img src="${icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
                     } else {
                         element += `<td>${val}</td>`;
                     }

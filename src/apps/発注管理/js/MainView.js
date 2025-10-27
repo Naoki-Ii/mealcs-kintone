@@ -6,7 +6,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
     const EventTrigger = ["app.record.index.show"];
 
     kintone.events.on(EventTrigger, async function (event) {
-        if (event.viewId != currentEnvGlobalConfig.APP.ORDER.CUSTOMIZE.MainView) {
+        if (!currentEnvGlobalConfig.APP.ORDER.CUSTOMIZE.MainView.includes(event.viewId)) {
+            console.log("Not MainView");
+            console.log("current viewId:", event.viewId);
             return event;
         }
 
@@ -16,6 +18,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         const url = new URL(window.location.href);
         const params = url.searchParams;
         const base_date = params.get('date') == null ? DefaultDate : params.get('date');
+        const save_kubun = params.get('save_kubun') == null ? "チル食品" : params.get('save_kubun');
+        const info_icon = "https://order-mealcs.com/img/info_icon.png";
+        const info_red_icon = "https://order-mealcs.com/img/info_red_icon.png";
 
         const FilterJson = {
             "date": {
@@ -24,6 +29,14 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 "id": "filter_date",
                 "type": "date",
                 "value": base_date,
+            },
+            "save_kubun": {
+                "field": "save_kubun",
+                "label": "保管区分",
+                "id": "filter_save_kubun",
+                "type": "select",
+                "value": save_kubun,
+                "options": ["チル食品", "冷凍食品", "2日前納品"]
             }
         }
 
@@ -43,7 +56,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         //フィールド情報取得
         const request1 = KintoneRestAPI(GetFieldElement, "GET", "field");
         const request2 = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
-        const request3 = KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" order by 表示優先順位 asc limit 500` }, "GET", "mul");
+        const request3 = KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" and save_kubun in ("${save_kubun}") order by 表示優先順位 asc limit 500` }, "GET", "mul");
         const response = await Promise.all([request1, request2, request3]);
         const fieldlist = response[0];
         const category_response = response[1];
@@ -56,130 +69,135 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
             }
             SearchQuery += `order_id = ${record.$id.value}`;
         }
-        if (SearchQuery == "") {
-            return event;
-        }
-        const TotalSearchQuery = `(${SearchQuery}) and order_date = "${formatDate2(new Date(base_date), "yyyy-MM-dd")}" limit 500`;
-        const check_list = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID, "query": TotalSearchQuery }, "GET", "mul");
 
-        const check_json = {};
-        for (const record of check_list.records) {
-            const order_id = record.order_id.value;
-            const data = {
-                "record_id": record.$id.value,
-                "order_id": record.order_id.value,
-                "order_date": record.order_date.value,
-                "company_id": record.company_id.value,
-                "check_list": record.チェック一覧.value,
-            }
-            if (check_json[order_id] == undefined) {
-                check_json[order_id] = data;
-            }
-        }
-        console.log("check_json", check_json);
+        const hasNoResults = SearchQuery == "";
 
-        const info_icon = "https://order-mealcs.com/img/info_icon.png";
-        const recordsPerBatch = 20; // 一度に処理するレコード数
-        let queries = [];
-        for (let i = 0; i < records.length; i += recordsPerBatch) {
-            let serach_id_query = "";
-            for (let j = i; j < i + recordsPerBatch && j < records.length; j++) {
-                serach_id_query += `order_id = ${records[j].$id.value}`;
-                if (j != Math.min(i + recordsPerBatch, records.length) - 1) {
-                    serach_id_query += " or ";
-                }
-            }
-            queries.push(serach_id_query);
-        }
-
-        const result = [];
-        // 結果のクエリリストを出力
-        queries.forEach((query, index) => {
-            // console.log(`Query Batch ${index + 1}:`, query);
-            const request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `${query} order by 作成日時 asc limit 500` }, "GET", "mul");
-            result.push(request);
-        });
-
-        const history_response = await Promise.all(result);
+        let check_json = {};
         let history_records = [];
-        for (const records of history_response) {
-            history_records = history_records.concat(records.records);
-        }
-        // レコード番号でソート
-        history_records.sort((a, b) => {
-            return a.レコード番号.value - b.レコード番号.value;
-        });
-        const history_data_json = {};
-        for (var n = 0; n < history_records.length; n++) {
-            try {
-                const record = history_records[n];
-                const company_id = record.company_id.value;
-                const data = JSON.parse(record.data.value);
-                const change_date = formatDateTime(new Date(record.作成日時.value), "MM/dd HH:mm");
-                const output_data = {
-                    "date": change_date,
-                    "data": {}
-                }
-                for (const row of data) {
-                    const key_date = row.value.日付.value;
-                    delete row.value.日付;
-                    output_data["data"][key_date] = row.value;
-                }
-                if (history_data_json[company_id] == undefined) {
-                    history_data_json[company_id] = [];
-                }
-                history_data_json[company_id].push(output_data);
-            } catch (error) {
-                console.log(error);
-                continue;
-            }
-        }
+        let history_diff_info = {};
 
-        let hisotry_diff_info = {};
-        Object.keys(history_data_json).forEach(company_id => {
-            if (hisotry_diff_info[company_id] == undefined) {
-                hisotry_diff_info[company_id] = {};
+        if (!hasNoResults) {
+            const TotalSearchQuery = `(${SearchQuery}) and order_date = "${formatDate2(new Date(base_date), "yyyy-MM-dd")}" limit 500`;
+            const check_list = await KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.CHECKLIST_DB.AppID, "query": TotalSearchQuery }, "GET", "mul");
+
+            for (const record of check_list.records) {
+                const order_id = record.order_id.value;
+                const data = {
+                    "record_id": record.$id.value,
+                    "order_id": record.order_id.value,
+                    "order_date": record.order_date.value,
+                    "company_id": record.company_id.value,
+                    "check_list": record.チェック一覧.value,
+                }
+                if (check_json[order_id] == undefined) {
+                    check_json[order_id] = data;
+                }
             }
-            hisotry_diff_info[company_id][0] = history_data_json[company_id][0];
-            let last_history = history_data_json[company_id][0];
-            for (var p = 1; p < history_data_json[company_id].length; p++) {
-                const history_list = history_data_json[company_id][p];
-                Object.keys(history_list.data).forEach(date_key => {
-                    Object.keys(history_list.data[date_key]).forEach(field_key => {
-                        if (last_history.data[date_key] == undefined) {
-                            return;
-                        }
-                        if (last_history.data[date_key][field_key] == undefined) {
-                            return;
-                        }
-                        if (history_list.data[date_key][field_key]["value"] == null) {
-                            history_list.data[date_key][field_key]["value"] = "";
-                        }
-                        if (last_history.data[date_key][field_key]["value"] == null) {
-                            last_history.data[date_key][field_key]["value"] = "";
-                        }
-                        if (history_list.data[date_key][field_key]["value"] != last_history.data[date_key][field_key]["value"]) {
-                            if (hisotry_diff_info[company_id][p] == undefined) {
-                                hisotry_diff_info[company_id][p] = {
-                                    "date": history_list.date,
-                                    "data": {}
-                                };
+            console.log("check_json", check_json);
+            const recordsPerBatch = 20; // 一度に処理するレコード数
+            let queries = [];
+            for (let i = 0; i < records.length; i += recordsPerBatch) {
+                let serach_id_query = "";
+                for (let j = i; j < i + recordsPerBatch && j < records.length; j++) {
+                    serach_id_query += `order_id = ${records[j].$id.value}`;
+                    if (j != Math.min(i + recordsPerBatch, records.length) - 1) {
+                        serach_id_query += " or ";
+                    }
+                }
+                queries.push(serach_id_query);
+            }
+
+            const result = [];
+            // 結果のクエリリストを出力
+            queries.forEach((query, index) => {
+                // console.log(`Query Batch ${index + 1}:`, query);
+                const request = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.HISTORY_MANAGEMENT.AppID, "query": `${query} order by 作成日時 asc limit 500` }, "GET", "mul");
+                result.push(request);
+            });
+
+            const history_response = await Promise.all(result);
+            history_records = [];
+            for (const records of history_response) {
+                history_records = history_records.concat(records.records);
+            }
+            // レコード番号でソート
+            history_records.sort((a, b) => {
+                return a.レコード番号.value - b.レコード番号.value;
+            });
+            const history_data_json = {};
+            for (var n = 0; n < history_records.length; n++) {
+                try {
+                    const record = history_records[n];
+                    const company_id = record.company_id.value;
+                    const data = JSON.parse(record.data.value);
+                    const change_date = formatDateTime(new Date(record.作成日時.value), "MM/dd HH:mm");
+                    const output_data = {
+                        "date": change_date,
+                        "createdAt": record.作成日時.value,
+                        "data": {}
+                    }
+                    for (const row of data) {
+                        const key_date = row.value.日付.value;
+                        delete row.value.日付;
+                        output_data["data"][key_date] = row.value;
+                    }
+                    if (history_data_json[company_id] == undefined) {
+                        history_data_json[company_id] = [];
+                    }
+                    history_data_json[company_id].push(output_data);
+                } catch (error) {
+                    console.log(error);
+                    continue;
+                }
+            }
+
+            history_diff_info = {};
+            Object.keys(history_data_json).forEach(company_id => {
+                if (history_diff_info[company_id] == undefined) {
+                    history_diff_info[company_id] = {};
+                }
+                history_diff_info[company_id][0] = history_data_json[company_id][0];
+                let last_history = history_data_json[company_id][0];
+                for (var p = 1; p < history_data_json[company_id].length; p++) {
+                    const history_list = history_data_json[company_id][p];
+                    Object.keys(history_list.data).forEach(date_key => {
+                        Object.keys(history_list.data[date_key]).forEach(field_key => {
+                            if (last_history.data[date_key] == undefined) {
+                                return;
                             }
-                            // 差分がある場合
-                            if (hisotry_diff_info[company_id][p]["data"][date_key] == undefined) {
-                                hisotry_diff_info[company_id][p]["data"][date_key] = {}
+                            if (last_history.data[date_key][field_key] == undefined) {
+                                return;
                             }
-                            if (hisotry_diff_info[company_id][p]["data"][date_key][field_key] == undefined) {
-                                hisotry_diff_info[company_id][p]["data"][date_key][field_key] = {}
+                            if (history_list.data[date_key][field_key]["value"] == null) {
+                                history_list.data[date_key][field_key]["value"] = "";
                             }
-                            Object.assign(hisotry_diff_info[company_id][p]["data"][date_key][field_key], history_list.data[date_key][field_key]);
-                        }
+                            if (last_history.data[date_key][field_key]["value"] == null) {
+                                last_history.data[date_key][field_key]["value"] = "";
+                            }
+                            if (history_list.data[date_key][field_key]["value"] != last_history.data[date_key][field_key]["value"]) {
+                                if (history_diff_info[company_id][p] == undefined) {
+                                    history_diff_info[company_id][p] = {
+                                        "date": history_list.date,
+                                        "createdAt": history_list.createdAt,
+                                        "data": {}
+                                    };
+                                }
+                                // 差分がある場合
+                                if (history_diff_info[company_id][p]["data"][date_key] == undefined) {
+                                    history_diff_info[company_id][p]["data"][date_key] = {}
+                                }
+                                if (history_diff_info[company_id][p]["data"][date_key][field_key] == undefined) {
+                                    history_diff_info[company_id][p]["data"][date_key][field_key] = {}
+                                }
+                                Object.assign(history_diff_info[company_id][p]["data"][date_key][field_key], history_list.data[date_key][field_key]);
+                            }
+                        });
                     });
-                });
-                last_history = history_list;
-            }
-        });
-        console.log("hisotry_diff_info", hisotry_diff_info);
+                    last_history = history_list;
+                }
+            });
+            console.log("history_diff_info", history_diff_info);
+        }
 
         const time_kubun = {
             "b": {
@@ -291,14 +309,42 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                             // 履歴表示機能
                             let history_info_element = "<div class='history_info_box'>";
                             let display_count = 0;
-                            if (hisotry_diff_info[record.company_id.value] != undefined) {
-                                Object.keys(hisotry_diff_info[record.company_id.value]).forEach(key => {
-                                    if (hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value] != undefined) {
-                                        if (hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][val] != undefined) {
-                                            const history_date = hisotry_diff_info[record.company_id.value][key]["date"];
-                                            const history_data = hisotry_diff_info[record.company_id.value][key]["data"][row.value.日付.value][val]["value"];
-                                            history_info_element += `<div class="balloon" data-date="${history_date}" data-field="${time_kubun[kubun].value + "_" + category.key}">${history_date} : <span class="strong">${history_data}</span></div>`;
+                            let hasRecentChange = false;
+                            const field_key = time_kubun[kubun].value + "_" + category.key;
+
+                            // 現在時刻を基準に範囲を計算（毎日15時リセット）
+                            const now = new Date();
+                            const currentHour = now.getHours();
+
+                            let startTime, endTime;
+
+                            if (currentHour < 15) {
+                                // 15時より前: 前日15時 〜 現在時刻
+                                startTime = new Date(now);
+                                startTime.setDate(startTime.getDate() - 1);
+                                startTime.setHours(15, 0, 0, 0);
+                                endTime = new Date(now);
+                            } else {
+                                // 15時以降: 当日15時 〜 現在時刻
+                                startTime = new Date(now);
+                                startTime.setHours(15, 0, 0, 0);
+                                endTime = new Date(now);
+                            }
+
+                            if (history_diff_info[record.company_id.value] != undefined) {
+                                Object.keys(history_diff_info[record.company_id.value]).forEach(key => {
+                                    if (history_diff_info[record.company_id.value][key]["data"][row.value.日付.value] != undefined) {
+                                        if (history_diff_info[record.company_id.value][key]["data"][row.value.日付.value][field_key] != undefined) {
+                                            const history_date = history_diff_info[record.company_id.value][key]["date"];
+                                            const history_data = history_diff_info[record.company_id.value][key]["data"][row.value.日付.value][field_key]["value"];
+                                            history_info_element += `<div class="balloon" data-date="${history_date}" data-field="${field_key}">${history_date} : <span class="strong">${history_data}</span></div>`;
                                             display_count++;
+
+                                            // 赤いアイコン判定: 現在時刻基準の範囲内の変更か確認（15時リセット）
+                                            const createdAt = new Date(history_diff_info[record.company_id.value][key]["createdAt"]);
+                                            if (createdAt >= startTime && createdAt <= endTime) {
+                                                hasRecentChange = true;
+                                            }
                                         }
                                     }
                                 });
@@ -309,7 +355,8 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                             }
 
                             if (display_count > 1) {
-                                element += `<td class="value ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="${category.key}" data-category="${time_kubun[kubun].label}">${val}<img src="${info_icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
+                                const icon = hasRecentChange ? info_red_icon : info_icon;
+                                element += `<td class="value ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="${category.key}" data-category="${time_kubun[kubun].label}">${val}<img src="${icon}" alt="info_icon" width="15px" class="info_icon">${history_info_element}</td>`;
                             } else {
                                 element += `<td class="value ${add_class}" data-order_id="${record.$id.value}" data-company_id="${record.company_id.value}" data-check_id="${ThisCheckList.record_id}" data-key="${category.key}" data-category="${time_kubun[kubun].label}">${val}</td>`;
                             }
@@ -337,7 +384,16 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         Object.keys(FilterJson).forEach(function (key) {
             header += `<div class="filter">`;
             header += `<label>${FilterJson[key].label}</label>`;
-            header += `<input type="${FilterJson[key].type}" id="${FilterJson[key].id}" value="${FilterJson[key].value}">`;
+            if (FilterJson[key].type === "select") {
+                header += `<select id="${FilterJson[key].id}" class="kintoneplugin-select filter-select">`;
+                FilterJson[key].options.forEach(function (option) {
+                    const selected = option === FilterJson[key].value ? 'selected' : '';
+                    header += `<option value="${option}" ${selected}>${option}</option>`;
+                });
+                header += `</select>`;
+            } else {
+                header += `<input type="${FilterJson[key].type}" id="${FilterJson[key].id}" value="${FilterJson[key].value}">`;
+            }
             header += `</div>`;
         });
         header += `<div class="filter">`;
@@ -350,36 +406,41 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         header += `</div>`;
 
         let sec = "";
-        sec +=
-            `
+
+        if (hasNoResults) {
+            sec += `<div class="no-results-message">注文はありません</div>`;
+        } else {
+            sec +=
+                `
 					<table>
 						<thead>
 					`;
 
-        for (var n = 0; n < DisplayList.length; n++) {
-            if (DisplayList[n].custome_view) {
-                sec += DisplayList[n].custome_label();
+            for (var n = 0; n < DisplayList.length; n++) {
+                if (DisplayList[n].custome_view) {
+                    sec += DisplayList[n].custome_label();
+                }
             }
-        }
-        sec +=
-            `
+            sec +=
+                `
             </thead>
             <tbody>
             `
-            ;
-        for (var i = 0; i < records.length; i++) {
-            for (var n = 0; n < DisplayList.length; n++) {
-                if (DisplayList[n].custome_view) {
-                    sec += DisplayList[n].custome_value(records[i], base_date, i);
+                ;
+            for (var i = 0; i < records.length; i++) {
+                for (var n = 0; n < DisplayList.length; n++) {
+                    if (DisplayList[n].custome_view) {
+                        sec += DisplayList[n].custome_value(records[i], base_date, i);
+                    }
                 }
             }
-        }
-        sec +=
-            `		
+            sec +=
+                `
                 </tbody>
             </table>
             `
-            ;
+                ;
+        }
 
         element.innerHTML += sec;
         $(".kintone-app-headermenu-space").append(header);
@@ -399,7 +460,8 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 date = formatDate2(DefaultDate, "yyyy-MM-dd");
             }
             date = formatDate2(new Date(date), "yyyy-MM-dd");
-            location.href = `https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/?view=${currentEnvGlobalConfig.APP.ORDER.CUSTOMIZE.MainView}&date=${date}`;
+            const save_kubun_val = $(".kintone-app-headermenu-space #filter_save_kubun").val();
+            location.href = `https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/?view=${event.viewId}&date=${date}&save_kubun=${save_kubun_val}`;
         });
 
         $(".kintone-app-headermenu-space #output").on("click", function () {

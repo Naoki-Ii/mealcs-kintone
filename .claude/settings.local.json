@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//Users/nk/Desktop/MyPl/リックス工業株式会社グループ/シンクアス株式会社/株式会社ミールケアサービス/application/mealcs-kintone/src/apps/発注管理/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
