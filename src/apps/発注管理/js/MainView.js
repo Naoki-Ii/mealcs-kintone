@@ -18,7 +18,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         const url = new URL(window.location.href);
         const params = url.searchParams;
         const base_date = params.get('date') == null ? DefaultDate : params.get('date');
-        const save_kubun = params.get('save_kubun') == null ? "チル食品" : params.get('save_kubun');
+        const save_kubun = params.get('save_kubun') == null ? "all" : params.get('save_kubun');
         const info_icon = "https://order-mealcs.com/img/info_icon.png";
         const info_red_icon = "https://order-mealcs.com/img/info_red_icon.png";
 
@@ -36,7 +36,7 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 "id": "filter_save_kubun",
                 "type": "select",
                 "value": save_kubun,
-                "options": ["チル食品", "冷凍食品", "2日前納品"]
+                "options": ["全て", "チル食品", "冷凍食品", "2日前納品"]
             }
         }
 
@@ -56,7 +56,16 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
         //フィールド情報取得
         const request1 = KintoneRestAPI(GetFieldElement, "GET", "field");
         const request2 = KintoneRestAPI({ "app": currentEnvGlobalConfig.APP.KUBUN_MASTER_DB.AppID, "query": "limit 500" }, "GET", "mul");
-        const request3 = KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" and save_kubun in ("${save_kubun}") order by 表示優先順位 asc limit 500` }, "GET", "mul");
+
+        // クエリ条件の分岐
+        let save_kubun_query = "";
+        if (save_kubun === "all") {
+            save_kubun_query = `save_kubun in ("チル食品", "冷凍食品", "2日前納品")`;
+        } else {
+            save_kubun_query = `save_kubun in ("${save_kubun}")`;
+        }
+
+        const request3 = KintoneRestAPI({ "app": kintone.app.getId(), "query": `start_date >= "${start_date_str}" and start_date < "${end_date_str}" and ${save_kubun_query} order by 表示優先順位 asc limit 500` }, "GET", "mul");
         const response = await Promise.all([request1, request2, request3]);
         const fieldlist = response[0];
         const category_response = response[1];
@@ -387,8 +396,9 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
             if (FilterJson[key].type === "select") {
                 header += `<select id="${FilterJson[key].id}" class="kintoneplugin-select filter-select">`;
                 FilterJson[key].options.forEach(function (option) {
-                    const selected = option === FilterJson[key].value ? 'selected' : '';
-                    header += `<option value="${option}" ${selected}>${option}</option>`;
+                    const optionValue = option === "全て" ? "all" : option;
+                    const selected = optionValue === FilterJson[key].value ? 'selected' : '';
+                    header += `<option value="${optionValue}" ${selected}>${option}</option>`;
                 });
                 header += `</select>`;
             } else {
@@ -460,7 +470,10 @@ import { KintoneRestAPI, formatDateTime, formatDate2, getCSV } from '../../../co
                 date = formatDate2(DefaultDate, "yyyy-MM-dd");
             }
             date = formatDate2(new Date(date), "yyyy-MM-dd");
-            const save_kubun_val = $(".kintone-app-headermenu-space #filter_save_kubun").val();
+            let save_kubun_val = $(".kintone-app-headermenu-space #filter_save_kubun").val();
+            if (save_kubun_val === "全て") {
+                save_kubun_val = "all";
+            }
             location.href = `https://${currentEnvGlobalConfig.KINTONE_DOMAIN}.cybozu.com/k/${kintone.app.getId()}/?view=${event.viewId}&date=${date}&save_kubun=${save_kubun_val}`;
         });
 
