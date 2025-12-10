@@ -9,3 +9,4 @@ deploy
 deployall
 *.pem
 *.txt
+seclet-docs
