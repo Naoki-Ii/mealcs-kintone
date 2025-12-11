@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ラベル印刷システム - 画面イメージ</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', Meiryo, sans-serif;
+      background: #f0f2f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .page-title {
+      text-align: center;
+      padding: 40px 20px 20px;
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .screen-container {
+      max-width: 1200px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .screen-label {
+      background: #4a90d9;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-block;
+      margin-bottom: 16px;
+    }
+
+    .screen {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+
+    /* Header */
+    .header {
+      background: #fff;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .header-title {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .header-date {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+    }
+
+    .date-picker {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .save-status {
+      color: #7ed321;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      background: #fafafa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search-box {
+      display: flex;
+      align-items: center;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 12px;
+      width: 200px;
+    }
+
+    .search-box input {
+      border: none;
+      outline: none;
+      width: 100%;
+      font-size: 14px;
+    }
+
+    .filter-btn {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      color: #666;
+      cursor: pointer;
+    }
+
+    .filter-btn:hover {
+      background: #f5f5f5;
+    }
+
+    /* Data Table */
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      background: #f7f8fa;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: 13px;
+      color: #666;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 14px;
+    }
+
+    .data-table tr:hover {
+      background: #f8fafc;
+    }
+
+    .dropdown {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 13px;
+      color: #333;
+    }
+
+    /* Two Pane Layout */
+    .two-pane {
+      display: grid;
+      grid-template-columns: 1fr 350px;
+      min-height: 500px;
+    }
+
+    .left-pane {
+      border-right: 1px solid #e0e0e0;
+      overflow-y: auto;
+    }
+
+    .right-pane {
+      background: #fafafa;
+      padding: 24px;
+    }
+
+    .right-pane-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .right-pane-value {
+      font-size: 16px;
+      color: #1a1a1a;
+      margin-bottom: 20px;
+    }
+
+    .label-preview {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .label-preview-box {
+      background: #f9f9f9;
+      border: 2px dashed #ddd;
+      border-radius: 8px;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 14px;
+    }
+
+    /* Footer */
+    .footer {
+      background: #fafafa;
+      border-top: 1px solid #e0e0e0;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .selection-info {
+      font-size: 14px;
+      color: #666;
+    }
+
+    .selection-info strong {
+      color: #4a90d9;
+    }
+
+    .btn-primary {
+      background: #4a90d9;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .btn-primary:hover {
+      background: #3a7bc8;
+    }
+
+    .btn-secondary {
+      background: white;
+      color: #666;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Checkbox */
+    .checkbox {
+      width: 18px;
+      height: 18px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .checkbox.checked {
+      background: #4a90d9;
+      border-color: #4a90d9;
+      color: white;
+    }
+
+    /* Tree View */
+    .tree-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+    }
+
+    .tree-item:hover {
+      background: #f8fafc;
+    }
+
+    .tree-parent {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 600;
+    }
+
+    .tree-child {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 32px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .expand-icon {
+      color: #999;
+      font-size: 12px;
+    }
+
+    .item-count {
+      background: #e8f0fe;
+      color: #4a90d9;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      margin-left: auto;
+    }
+
+    /* Detail Screen */
+    .info-bar {
+      background: #f7f8fa;
+      border-bottom: 1px solid #e0e0e0;
+      padding: 12px 24px;
+      display: flex;
+      gap: 24px;
+      font-size: 14px;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .info-label {
+      color: #666;
+    }
+
+    .info-value {
+      font-weight: 600;
+      color: #1a1a1a;
+    }
+
+    .badge {
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+    }
+
+    /* Menu Section */
+    .menu-section {
+      padding: 20px 24px;
+    }
+
+    .menu-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f59e0b;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #f59e0b;
+      display: inline-block;
+    }
+
+    .menu-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .menu-item-name {
+      flex: 1;
+    }
+
+    .menu-item-qty {
+      width: 60px;
+      text-align: right;
+      color: #666;
+    }
+
+    .kinshoku-item {
+      background: #fef3cd;
+      margin: 8px 0;
+      padding: 10px 12px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+    }
+
+    .kinshoku-arrow {
+      color: #f59e0b;
+    }
+
+    /* Alternative Menu */
+    .alt-menu-section {
+      padding: 20px;
+    }
+
+    .alt-menu-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 12px;
+    }
+
+    .alt-menu-list {
+      list-style: none;
+    }
+
+    .alt-menu-list li {
+      padding: 10px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    .alt-menu-list li:hover {
+      background: #e8f0fe;
+    }
+
+    /* Buttons */
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      padding: 16px 24px;
+      border-top: 1px solid #e0e0e0;
+    }
+
+    .btn-add {
+      background: #f0f7ff;
+      color: #4a90d9;
+      border: 1px solid #4a90d9;
+      border-radius: 6px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .divider {
+      height: 60px;
+    }
+
+    /* Back button */
+    .back-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #666;
+      font-size: 14px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1 class="page-title">ラベル印刷システム - 画面イメージ</h1>
+
+  <!-- Screen 1: 献立表一覧 -->
+  <div class="screen-container">
+    <span class="screen-label">画面1: 献立表一覧</span>
+    <div class="screen">
+      <div class="header">
+        <span class="header-title">献立表一覧</span>
+        <div class="header-date">
+          <span>喫食日:</span>
+          <span class="date-picker">2024/12/10</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" placeholder="検索...">
+        </div>
+        <button class="filter-btn">施設 ▼</button>
+        <button class="filter-btn">区分 ▼</button>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th style="width: 200px;">施設名</th>
+            <th>献立名</th>
+            <th style="width: 100px;">注文数</th>
+            <th style="width: 80px;">MAX</th>
+            <th style="width: 120px;">主/副</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>A介護施設</td>
+            <td>ハムステーキ</td>
+            <td>287</td>
+            <td>50</td>
+            <td><select class="dropdown"><option>主菜</option></select></td>
+          </tr>
+          <tr>
+            <td>A介護施設</td>
+            <td>小松菜とじゃこの和え物</td>
+            <td>287</td>
+            <td>30</td>
+            <td><select class="dropdown"><option>副菜</option></select></td>
+          </tr>
+          <tr>
+            <td>A介護施設</td>
+            <td>味噌汁（白菜大根葉）</td>
+            <td>287</td>
+            <td>40</td>
+            <td><select class="dropdown"><option>汁物</option></select></td>
+          </tr>
+          <tr>
+            <td>B病院</td>
+            <td>野菜コロッケ</td>
+            <td>7</td>
+            <td>50</td>
+            <td><select class="dropdown"><option>主菜</option></select></td>
+          </tr>
+          <tr>
+            <td>B病院</td>
+            <td>ミートマカロニ</td>
+            <td>7</td>
+            <td>30</td>
+            <td><select class="dropdown"><option>副菜</option></select></td>
+          </tr>
+          <tr>
+            <td>B病院</td>
+            <td>とうふの青しそ和え</td>
+            <td>7</td>
+            <td>40</td>
+            <td><select class="dropdown"><option>副菜</option></select></td>
+          </tr>
+          <tr>
+            <td>C施設</td>
+            <td>豚肉のにんにく醤油焼き</td>
+            <td>45</td>
+            <td>50</td>
+            <td><select class="dropdown"><option>主菜</option></select></td>
+          </tr>
+          <tr>
+            <td>C施設</td>
+            <td>ごぼうのごま炒め</td>
+            <td>45</td>
+            <td>30</td>
+            <td><select class="dropdown"><option>副菜</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="footer">
+        <span class="selection-info">150件表示中</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 2: 施設別献立詳細 -->
+  <div class="screen-container">
+    <span class="screen-label">画面2: 施設別献立詳細</span>
+    <div class="screen">
+      <div class="header">
+        <div class="back-btn">← 戻る</div>
+        <span class="header-title">施設: A介護施設</span>
+        <span class="save-status">✓ 保存しました</span>
+      </div>
+      <div class="info-bar">
+        <div class="info-item">
+          <span class="info-label">注文数:</span>
+          <span class="info-value">287名</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">禁食:</span>
+          <span class="badge">魚 5名</span>
+          <span class="badge">卵 3名</span>
+        </div>
+      </div>
+      <div class="two-pane">
+        <div class="left-pane">
+          <div class="menu-section">
+            <div class="menu-title">朝食</div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">主菜: ハムステーキ</span>
+              <span class="menu-item-qty">287</span>
+            </div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">副菜: 小松菜とじゃこの和え物</span>
+              <span class="menu-item-qty">282</span>
+            </div>
+            <div class="kinshoku-item">
+              <span class="kinshoku-arrow">禁食→</span>
+              <span>ほうれん草の胡麻和え</span>
+              <span style="margin-left: auto;">5</span>
+            </div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">汁物: 味噌汁（白菜大根葉）</span>
+              <span class="menu-item-qty">287</span>
+            </div>
+          </div>
+          <div class="menu-section">
+            <div class="menu-title" style="color: #ef4444; border-color: #ef4444;">昼食</div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">主菜: 野菜コロッケ</span>
+              <span class="menu-item-qty">287</span>
+            </div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">副菜: ミートマカロニ</span>
+              <span class="menu-item-qty">287</span>
+            </div>
+            <div class="menu-item">
+              <span class="checkbox"></span>
+              <span class="menu-item-name">副菜: とうふの青しそ和え</span>
+              <span class="menu-item-qty">287</span>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button class="btn-add">+ 禁食追加</button>
+            <button class="btn-add">+ 追加献立</button>
+          </div>
+        </div>
+        <div class="right-pane">
+          <div class="alt-menu-title">代替献立</div>
+          <ul class="alt-menu-list">
+            <li>├ ほうれん草の胡麻和え</li>
+            <li>├ 豚肉のにんにく醤油焼き</li>
+            <li>├ ごぼうのごま炒め</li>
+            <li>├ 白菜と昆布の和え物</li>
+            <li>└ ...</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer">
+        <span></span>
+        <button class="btn-primary">→ 次へ</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Screen 3: ラベル印刷 -->
+  <div class="screen-container">
+    <span class="screen-label">画面3: ラベル印刷</span>
+    <div class="screen">
+      <div class="header">
+        <span class="header-title">ラベル印刷</span>
+        <div class="header-date">
+          <span>喫食日:</span>
+          <span class="date-picker">2024/12/10</span>
+        </div>
+      </div>
+      <div class="toolbar">
+        <div class="search-box">
+          <input type="text" placeholder="検索...">
+        </div>
+        <button class="filter-btn">施設 ▼</button>
+        <button class="filter-btn">区分 ▼</button>
+      </div>
+      <div class="two-pane">
+        <div class="left-pane">
+          <div class="tree-item">
+            <div class="tree-parent">
+              <span class="checkbox checked">✓</span>
+              <span class="expand-icon">▼</span>
+              <span>ハムステーキ</span>
+              <span class="item-count">156施設</span>
+              <span style="margin-left: 8px; color: #666;">計 4,250</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-child">
+              <span class="checkbox checked">✓</span>
+              <span>A介護施設</span>
+              <span style="margin-left: auto; color: #666;">287</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-child">
+              <span class="checkbox checked">✓</span>
+              <span>B病院</span>
+              <span style="margin-left: auto; color: #666;">7</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-child">
+              <span class="checkbox checked">✓</span>
+              <span>C施設</span>
+              <span style="margin-left: auto; color: #666;">45</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-parent">
+              <span class="checkbox"></span>
+              <span class="expand-icon">▶</span>
+              <span>小松菜とじゃこの和え物</span>
+              <span class="item-count">156施設</span>
+              <span style="margin-left: 8px; color: #666;">計 4,180</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-parent">
+              <span class="checkbox"></span>
+              <span class="expand-icon">▶</span>
+              <span>味噌汁（白菜大根葉）</span>
+              <span class="item-count">156施設</span>
+              <span style="margin-left: 8px; color: #666;">計 4,250</span>
+            </div>
+          </div>
+          <div class="tree-item">
+            <div class="tree-parent">
+              <span class="checkbox"></span>
+              <span class="expand-icon">▶</span>
+              <span>野菜コロッケ</span>
+              <span class="item-count">156施設</span>
+              <span style="margin-left: 8px; color: #666;">計 4,250</span>
+            </div>
+          </div>
+        </div>
+        <div class="right-pane">
+          <div class="right-pane-title">施設名</div>
+          <div class="right-pane-value">A介護施設</div>
+          <div class="right-pane-title">献立名</div>
+          <div class="right-pane-value">ハムステーキ</div>
+          <div class="label-preview">
+            <div class="right-pane-title">ラベルプレビュー</div>
+            <div class="label-preview-box">
+              ラベルイメージ
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <span class="selection-info"><span class="checkbox checked" style="display: inline-flex; vertical-align: middle; margin-right: 8px;">✓</span><strong>156件</strong> 選択中</span>
+        <button class="btn-primary">選択分を印刷</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+</body>
+</html>
